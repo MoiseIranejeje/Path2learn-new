@@ -1,0 +1,64 @@
+{% extends 'base.html' %} {% block title %}{{ title }} - Path2Learn{% endblock
+%} {% block content %}
+<div class="container mx-auto p-6">
+  <h1 class="text-3xl font-bold mb-6">Manage Pending Reviews</h1>
+  {% if reviews %}
+  <div class="bg-gray-800 rounded-xl shadow-lg overflow-hidden">
+    <table class="min-w-full divide-y divide-gray-700">
+      <thead class="bg-gray-900">
+        <tr>
+          <th class="px-6 py-3 text-left">Reviewer</th>
+          <th class="px-6 py-3 text-left">School</th>
+          <th class="px-6 py-3 text-left">Rating</th>
+          <th class="px-6 py-3 text-left">Comment</th>
+          <th class="px-6 py-3 text-center">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-700">
+        {% for review in reviews %}
+        <tr>
+          <td class="px-6 py-4">{{ review.reviewer_name }}</td>
+          <td class="px-6 py-4">
+            <a
+              href="{{ url_for('school_detail', school_id=review.school_id) }}"
+              class="text-blue-400 hover:underline"
+              >{{ review.school.name }}</a
+            >
+          </td>
+          <td class="px-6 py-4 text-yellow-400">
+            {% for i in range(review.rating) %}★{% endfor %}
+          </td>
+          <td class="px-6 py-4 text-sm text-gray-300 max-w-sm truncate">
+            {{ review.comment }}
+          </td>
+          <td class="px-6 py-4 text-center">
+            <div class="flex justify-center space-x-2">
+              <form
+                action="{{ url_for('approve_review', review_id=review.id) }}"
+                method="POST"
+              >
+                <button class="btn btn-sm btn-success">Approve</button>
+              </form>
+              <form
+                action="{{ url_for('delete_review', review_id=review.id) }}"
+                method="POST"
+                onsubmit="return confirm('Delete this review permanently?')"
+              >
+                <button class="btn btn-sm btn-danger">Delete</button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="text-center py-16">
+    <i class="fas fa-check-circle fa-4x text-green-500 mb-4"></i>
+    <h2 class="text-2xl font-bold">Review queue is empty!</h2>
+    <p class="text-gray-400">No new reviews are waiting for approval.</p>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

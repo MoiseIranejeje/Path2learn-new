@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-8">
+        <h1 class="text-3xl font-bold text-white">Student Dashboard</h1>
+        <a href="{{ url_for('link_account') }}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition">
+            <i class="fas fa-link mr-2"></i> Link to Parent
+        </a>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <!-- Card 1: National Exam Results -->
+        <div class="bg-gray-800 rounded-lg shadow-lg p-6 border border-gray-700">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xl font-bold text-yellow-400">Exam Results</h3>
+                <i class="fas fa-graduation-cap text-2xl text-yellow-400"></i>
+            </div>
+            <p class="text-gray-400 mb-4">Check your P6 or S3 National Examination results quickly.</p>
+            <a href="https://sdms.reb.rw/public/national-exam-result.html" target="_blank" class="block w-full text-center bg-gray-700 hover:bg-gray-600 text-white py-2 rounded transition">
+                Check Results (REB)
+            </a>
+        </div>
+
+        <!-- Card 2: Dream Careers -->
+        <div class="bg-gray-800 rounded-lg shadow-lg p-6 border border-gray-700">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xl font-bold text-purple-400">Dream Careers</h3>
+                <i class="fas fa-rocket text-2xl text-purple-400"></i>
+            </div>
+            <p class="text-gray-400 mb-4">Not sure what to study? Explore combinations and career paths.</p>
+            <a href="{{ url_for('smart_search') }}" class="block w-full text-center bg-gray-700 hover:bg-gray-600 text-white py-2 rounded transition">
+                Find My Path
+            </a>
+        </div>
+
+        <!-- Card 3: Link Status -->
+        <div class="bg-gray-800 rounded-lg shadow-lg p-6 border border-gray-700">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xl font-bold text-green-400">Family Link</h3>
+                <i class="fas fa-users text-2xl text-green-400"></i>
+            </div>
+            {% if parent %}
+                <p class="text-gray-300">Linked to Parent:</p>
+                <p class="text-white font-bold text-lg mb-2">{{ parent.username }}</p>
+                <span class="inline-block bg-green-900 text-green-300 text-xs px-2 py-1 rounded">Active</span>
+            {% else %}
+                <p class="text-gray-400 mb-4">No parent account linked yet. Link to get fee approval.</p>
+                <a href="{{ url_for('link_account') }}" class="text-green-400 hover:text-green-300 font-bold text-sm">Link Now &rarr;</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Shortlisted Schools Section -->
+    <div class="bg-gray-800 rounded-lg shadow-lg p-6 border border-gray-700">
+        <h2 class="text-2xl font-bold text-white mb-6 border-b border-gray-700 pb-2">My Shortlisted Schools</h2>
+
+        {% if shortlist %}
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-gray-300">
+                    <thead class="bg-gray-700 text-white">
+                        <tr>
+                            <th class="p-3">School Name</th>
+                            <th class="p-3">Location</th>
+                            <th class="p-3">Program</th>
+                            <th class="p-3">Parent Status</th>
+                            <th class="p-3">Parent Comment</th>
+                            <th class="p-3">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-700">
+                        {% for item in shortlist %}
+                        <tr class="hover:bg-gray-750">
+                            <td class="p-3 font-medium text-white">{{ item.school.name }}</td>
+                            <td class="p-3">{{ item.school.district }}, {{ item.school.province }}</td>
+                            <td class="p-3">{{ item.school.education_program }}</td>
+                            <td class="p-3">
+                                {% if item.parent_status == 'approved' %}
+                                    <span class="bg-green-900 text-green-300 py-1 px-2 rounded text-xs font-bold">APPROVED</span>
+                                {% elif item.parent_status == 'rejected' %}
+                                    <span class="bg-red-900 text-red-300 py-1 px-2 rounded text-xs font-bold">REJECTED</span>
+                                {% else %}
+                                    <span class="bg-yellow-900 text-yellow-300 py-1 px-2 rounded text-xs font-bold">PENDING</span>
+                                {% endif %}
+                            </td>
+                            <td class="p-3 text-sm italic text-gray-400">
+                                {{ item.parent_comment or '-' }}
+                            </td>
+                            <td class="p-3">
+                                <a href="{{ url_for('school_detail', school_id=item.school.id) }}" class="text-blue-400 hover:text-blue-300 text-sm">View Details</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="text-center py-8">
+                <p class="text-gray-400 mb-4">You haven't added any schools to your shortlist yet.</p>
+                <a href="{{ url_for('smart_search') }}" class="bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-2 px-6 rounded transition">
+                    Start Searching
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

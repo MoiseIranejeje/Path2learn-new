@@ -1,0 +1,335 @@
+{% extends 'base.html' %}
+
+{% block title %}School Choice Assistant - Path2Learn{% endblock %}
+
+{% block content %}
+<div class="min-h-screen py-12">
+  <div class="container mx-auto px-4 max-w-6xl">
+    <div class="text-center mb-10 animate-fadeInUp">
+      <span class="inline-flex items-center rounded-full bg-white px-4 py-2 text-sm font-semibold text-blue-700 shadow-sm ring-1 ring-slate-200">
+        <i class="fas fa-compass mr-2 text-amber-500"></i>
+        Guided school matching
+      </span>
+      <h1 class="mt-5 text-4xl md:text-5xl font-bold text-slate-900">School Choice Assistant</h1>
+      <p class="mt-4 text-lg text-slate-600 max-w-3xl mx-auto">
+        Answer a few guided questions and Path2Learn will surface your best match plus strong alternatives using published school data only.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 xl:grid-cols-[290px_minmax(0,1fr)] gap-8">
+      <aside class="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm h-fit">
+        <p class="text-sm font-semibold uppercase tracking-[0.2em] text-blue-700">How it works</p>
+        <div class="mt-6 space-y-4">
+          <div class="rounded-2xl bg-slate-50 p-4 border border-slate-200">
+            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Step 1</p>
+            <h2 class="mt-2 font-semibold text-slate-900">Academic path</h2>
+            <p class="mt-2 text-sm text-slate-600">Tell us where and what you want to study, plus your aggregate score if you have it.</p>
+          </div>
+          <div class="rounded-2xl bg-slate-50 p-4 border border-slate-200">
+            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Step 2</p>
+            <h2 class="mt-2 font-semibold text-slate-900">School setup</h2>
+            <p class="mt-2 text-sm text-slate-600">Choose the environment that fits your day-to-day needs, budget, and language preference.</p>
+          </div>
+          <div class="rounded-2xl bg-slate-50 p-4 border border-slate-200">
+            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Step 3</p>
+            <h2 class="mt-2 font-semibold text-slate-900">Interests</h2>
+            <p class="mt-2 text-sm text-slate-600">Pick activities, focus areas, and combinations that matter most to you.</p>
+          </div>
+          <div class="rounded-2xl bg-slate-50 p-4 border border-slate-200">
+            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Step 4</p>
+            <h2 class="mt-2 font-semibold text-slate-900">Review and match</h2>
+            <p class="mt-2 text-sm text-slate-600">Submit once your answers look right and we will rank your top schools.</p>
+          </div>
+        </div>
+      </aside>
+
+      <section class="rounded-[2rem] border border-slate-200 bg-white shadow-xl overflow-hidden">
+        <div class="p-1 bg-gradient-to-r from-blue-500 via-sky-500 to-amber-400"></div>
+        <div class="p-8 md:p-10">
+          <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+            <div>
+              <p class="text-sm font-semibold uppercase tracking-[0.2em] text-blue-700">Premium match flow</p>
+              <h2 class="mt-2 text-2xl md:text-3xl font-bold text-slate-900">Tell us what a good-fit school looks like</h2>
+            </div>
+            <div class="rounded-full bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-600">
+              <span id="wizardStepLabel">Step 1 of 4</span>
+            </div>
+          </div>
+
+          <div class="mb-8">
+            <div class="h-2 rounded-full bg-slate-100 overflow-hidden">
+              <div id="wizardProgressBar" class="h-full rounded-full bg-gradient-to-r from-blue-600 to-emerald-500 transition-all duration-300" style="width: 25%;"></div>
+            </div>
+            <div class="mt-4 grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+              <div class="choice-step-indicator rounded-2xl border border-blue-200 bg-blue-50 px-3 py-3 font-semibold text-blue-700" data-step="1">Academic Path</div>
+              <div class="choice-step-indicator rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 font-semibold text-slate-500" data-step="2">School Setup</div>
+              <div class="choice-step-indicator rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 font-semibold text-slate-500" data-step="3">Interests</div>
+              <div class="choice-step-indicator rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 font-semibold text-slate-500" data-step="4">Review</div>
+            </div>
+          </div>
+
+          <form id="choiceAssistantForm" method="POST" action="{{ url_for('smart_search') }}">
+            <div class="choice-step-pane space-y-6" data-step-pane="1">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label class="block text-sm font-medium text-slate-600 mb-2">Preferred Province</label>
+                  <select name="province" class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-900">
+                    <option value="">Any Province</option>
+                    {% for p in provinces %}
+                    <option value="{{ p }}">{{ p }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-slate-600 mb-2">Education Program</label>
+                  <select name="education_program" class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-900">
+                    <option value="">Any Program</option>
+                    {% for program in education_programs %}
+                    <option value="{{ program }}">{{ program }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+
+              <div class="rounded-3xl border border-emerald-100 bg-emerald-50 p-5">
+                <label class="block text-sm font-medium text-emerald-900 mb-2">Aggregate Score</label>
+                <p class="text-sm text-emerald-800 mb-3">
+                  Add your aggregate if you want the assistant to remove schools whose published cut-off would exclude you.
+                </p>
+                <input type="number" name="aggregate_score" min="0" max="100" placeholder="e.g. 15" class="w-full md:w-1/2 rounded-xl border border-emerald-200 bg-white px-4 py-3 text-slate-900">
+              </div>
+            </div>
+
+            <div class="choice-step-pane hidden space-y-6" data-step-pane="2">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label class="block text-sm font-medium text-slate-600 mb-2">Gender Policy</label>
+                  <select name="gender_policy" class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-900">
+                    <option value="">Any</option>
+                    <option value="Mixed">Mixed</option>
+                    <option value="Boys Only">Boys Only</option>
+                    <option value="Girls Only">Girls Only</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-slate-600 mb-2">Boarding Preference</label>
+                  <select name="boarding_policy" class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-900">
+                    <option value="">Any</option>
+                    <option value="Day School">Day School</option>
+                    <option value="Boarding School">Boarding School</option>
+                    <option value="Day and Boarding">Day and Boarding</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-slate-600 mb-2">Ownership</label>
+                  <select name="ownership" class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-900">
+                    <option value="">Any</option>
+                    <option value="Public">Public</option>
+                    <option value="Private">Private</option>
+                    <option value="Government -Aided (Religious)">Government Aided</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-slate-600 mb-2">Religious Preference</label>
+                  <input type="text" name="religious_affiliation" placeholder="e.g. Catholic, Protestant" class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-900">
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-slate-600 mb-2">Fee Band</label>
+                  <select name="fee_band" class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-900">
+                    <option value="">Any</option>
+                    {% for band in fee_band_options %}
+                    <option value="{{ band }}">{{ band }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-slate-600 mb-2">Language of Instruction</label>
+                  <select name="language_of_instruction" class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-900">
+                    <option value="">Any</option>
+                    {% for language in language_options %}
+                    <option value="{{ language }}">{{ language }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="choice-step-pane hidden space-y-8" data-step-pane="3">
+              <div>
+                <div class="flex items-center justify-between gap-3 mb-4">
+                  <div>
+                    <h3 class="text-lg font-semibold text-slate-900">Activities you care about</h3>
+                    <p class="text-sm text-slate-600">Pick any that should influence the final match.</p>
+                  </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+                  {% for activity in extracurriculars %}
+                  <label class="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 hover:border-blue-200 hover:bg-blue-50 transition">
+                    <input type="checkbox" name="extracurriculars" value="{{ activity }}" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                    <span class="text-sm font-medium text-slate-700">{{ activity }}</span>
+                  </label>
+                  {% endfor %}
+                </div>
+              </div>
+
+              <div>
+                <h3 class="text-lg font-semibold text-slate-900">Preferred subject combinations</h3>
+                <p class="mt-1 text-sm text-slate-600">Choose combinations that matter most to your academic direction.</p>
+                <div class="mt-4 grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3">
+                  {% for combination in combinations %}
+                  <label class="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 hover:border-emerald-200 hover:bg-emerald-50 transition">
+                    <input type="checkbox" name="preferred_combinations" value="{{ combination }}" class="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500">
+                    <span class="text-sm font-medium text-slate-700">{{ combination }}</span>
+                  </label>
+                  {% endfor %}
+                </div>
+              </div>
+
+              <div>
+                <h3 class="text-lg font-semibold text-slate-900">Focus tags</h3>
+                <p class="mt-1 text-sm text-slate-600">These shape the assistant toward the kind of environment you want.</p>
+                <div class="mt-4 flex flex-wrap gap-3">
+                  {% for tag in smart_tags %}
+                  <label class="flex items-center gap-3 rounded-full border border-slate-200 bg-slate-50 px-4 py-3 hover:border-amber-200 hover:bg-amber-50 transition">
+                    <input type="checkbox" name="focus_tags" value="{{ tag }}" class="rounded border-slate-300 text-amber-500 focus:ring-amber-500">
+                    <span class="text-sm font-semibold text-slate-700">{{ tag }}</span>
+                  </label>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+
+            <div class="choice-step-pane hidden space-y-6" data-step-pane="4">
+              <div class="rounded-[2rem] border border-slate-200 bg-slate-50 p-6">
+                <p class="text-sm font-semibold uppercase tracking-[0.2em] text-blue-700">Review answers</p>
+                <h3 class="mt-2 text-2xl font-bold text-slate-900">Ready to generate your top matches</h3>
+                <p class="mt-3 text-slate-600">This assistant uses only explicit school profile data. Missing school data lowers confidence instead of being guessed.</p>
+                <div id="advisorReviewSummary" class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+              </div>
+
+              <div class="rounded-[2rem] border border-dashed border-slate-300 bg-white p-6">
+                <h4 class="text-lg font-semibold text-slate-900">What you will receive</h4>
+                <ul class="mt-4 space-y-3 text-sm text-slate-600">
+                  <li class="flex items-start gap-3"><i class="fas fa-check-circle mt-0.5 text-emerald-500"></i><span>One best match and two strong alternatives</span></li>
+                  <li class="flex items-start gap-3"><i class="fas fa-check-circle mt-0.5 text-emerald-500"></i><span>Fit score, reasons, watch-outs, and confidence label</span></li>
+                  <li class="flex items-start gap-3"><i class="fas fa-check-circle mt-0.5 text-emerald-500"></i><span>Direct actions to view details, compare, or shortlist</span></li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="mt-10 flex flex-col-reverse md:flex-row md:items-center md:justify-between gap-4">
+              <button type="button" id="choiceAssistantBack" class="hidden rounded-full border border-slate-200 bg-white px-6 py-3 font-semibold text-slate-700 transition hover:bg-slate-50">
+                <i class="fas fa-arrow-left mr-2"></i>Back
+              </button>
+              <div class="flex items-center justify-end gap-3 ml-auto">
+                <a href="{{ url_for('advanced_search') }}" class="rounded-full border border-slate-200 bg-white px-6 py-3 font-semibold text-slate-700 transition hover:bg-slate-50">
+                  Browse Instead
+                </a>
+                <button type="button" id="choiceAssistantNext" class="rounded-full bg-blue-600 px-6 py-3 font-semibold text-white shadow-lg shadow-blue-200 transition hover:-translate-y-0.5 hover:bg-blue-700">
+                  Next Step <i class="fas fa-arrow-right ml-2"></i>
+                </button>
+                <button type="submit" id="choiceAssistantSubmit" class="hidden rounded-full bg-gradient-to-r from-blue-600 to-emerald-500 px-7 py-3 font-semibold text-white shadow-lg shadow-blue-200 transition hover:-translate-y-0.5">
+                  <i class="fas fa-sparkles mr-2"></i>Show My Top Matches
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("choiceAssistantForm");
+    if (!form) return;
+
+    const panes = Array.from(document.querySelectorAll("[data-step-pane]"));
+    const indicators = Array.from(document.querySelectorAll(".choice-step-indicator"));
+    const progressBar = document.getElementById("wizardProgressBar");
+    const stepLabel = document.getElementById("wizardStepLabel");
+    const nextButton = document.getElementById("choiceAssistantNext");
+    const backButton = document.getElementById("choiceAssistantBack");
+    const submitButton = document.getElementById("choiceAssistantSubmit");
+    const reviewSummary = document.getElementById("advisorReviewSummary");
+    let currentStep = 1;
+
+    function selectedValues(name) {
+      return Array.from(form.querySelectorAll(`input[name="${name}"]:checked`)).map((input) => input.value);
+    }
+
+    function fieldValue(name) {
+      const field = form.querySelector(`[name="${name}"]`);
+      return field ? field.value.trim() : "";
+    }
+
+    function renderReviewSummary() {
+      const summaryItems = [
+        ["Preferred Province", fieldValue("province") || "Any Province"],
+        ["Education Program", fieldValue("education_program") || "Any Program"],
+        ["Aggregate Score", fieldValue("aggregate_score") || "Not provided"],
+        ["Gender Policy", fieldValue("gender_policy") || "Any"],
+        ["Boarding", fieldValue("boarding_policy") || "Any"],
+        ["Ownership", fieldValue("ownership") || "Any"],
+        ["Religious Preference", fieldValue("religious_affiliation") || "No preference"],
+        ["Fee Band", fieldValue("fee_band") || "Any"],
+        ["Language", fieldValue("language_of_instruction") || "Any"],
+        ["Activities", selectedValues("extracurriculars").join(", ") || "None selected"],
+        ["Subject Combinations", selectedValues("preferred_combinations").join(", ") || "None selected"],
+        ["Focus Tags", selectedValues("focus_tags").join(", ") || "None selected"],
+      ];
+
+      reviewSummary.innerHTML = summaryItems.map(([label, value]) => `
+        <div class="rounded-2xl border border-slate-200 bg-white px-4 py-4">
+          <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">${label}</p>
+          <p class="mt-2 text-sm font-medium text-slate-800">${value}</p>
+        </div>
+      `).join("");
+    }
+
+    function updateWizard() {
+      panes.forEach((pane) => {
+        pane.classList.toggle("hidden", Number(pane.dataset.stepPane) !== currentStep);
+      });
+
+      indicators.forEach((indicator) => {
+        const indicatorStep = Number(indicator.dataset.step);
+        const active = indicatorStep === currentStep;
+        indicator.classList.toggle("border-blue-200", active);
+        indicator.classList.toggle("bg-blue-50", active);
+        indicator.classList.toggle("text-blue-700", active);
+        indicator.classList.toggle("border-slate-200", !active);
+        indicator.classList.toggle("bg-slate-50", !active);
+        indicator.classList.toggle("text-slate-500", !active);
+      });
+
+      stepLabel.textContent = `Step ${currentStep} of 4`;
+      progressBar.style.width = `${currentStep * 25}%`;
+      backButton.classList.toggle("hidden", currentStep === 1);
+      nextButton.classList.toggle("hidden", currentStep === 4);
+      submitButton.classList.toggle("hidden", currentStep !== 4);
+
+      if (currentStep === 4) {
+        renderReviewSummary();
+      }
+    }
+
+    nextButton.addEventListener("click", function () {
+      if (currentStep < 4) {
+        currentStep += 1;
+        updateWizard();
+      }
+    });
+
+    backButton.addEventListener("click", function () {
+      if (currentStep > 1) {
+        currentStep -= 1;
+        updateWizard();
+      }
+    });
+
+    updateWizard();
+  });
+</script>
+{% endblock %}

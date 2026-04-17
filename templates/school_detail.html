@@ -1,0 +1,401 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ school.name }} - Path2Learn{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-10">
+  <div class="grid grid-cols-1 xl:grid-cols-[minmax(0,1.8fr)_360px] gap-8">
+    <section class="min-w-0">
+      <div class="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-xl">
+        <div class="relative">
+          {% if photos %}
+          <div id="schoolPhotoCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+              {% for photo in photos %}
+              <div class="carousel-item {% if loop.first %}active{% endif %}">
+                <img src="{{ photo }}" alt="{{ school.name }} photo {{ loop.index }}" class="h-[340px] md:h-[460px] w-full object-cover" />
+              </div>
+              {% endfor %}
+            </div>
+            {% if photos|length > 1 %}
+            <button class="carousel-control-prev" type="button" data-bs-target="#schoolPhotoCarousel" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#schoolPhotoCarousel" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Next</span>
+            </button>
+            {% endif %}
+          </div>
+          {% else %}
+          <div class="flex h-[340px] md:h-[460px] items-center justify-center bg-gradient-to-br from-blue-50 via-white to-amber-50">
+            <div class="text-center">
+              <div class="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-blue-100 text-blue-600">
+                <i class="fas fa-school text-4xl"></i>
+              </div>
+              <p class="mt-4 text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">School profile</p>
+            </div>
+          </div>
+          {% endif %}
+
+          <div class="absolute inset-0 bg-gradient-to-r from-slate-950/55 via-slate-950/20 to-transparent"></div>
+          <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950/88 via-slate-950/45 to-transparent p-6 md:p-8">
+            <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+              <div class="max-w-3xl">
+                <div class="mb-3 flex flex-wrap gap-2">
+                  <span class="rounded-full bg-emerald-500 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.16em] text-white shadow-lg shadow-emerald-900/25">{{ school.ownership }}</span>
+                  <span class="rounded-full bg-white/90 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.16em] text-slate-800 shadow-lg shadow-slate-900/10">{{ school.education_program }}</span>
+                  <span class="rounded-full bg-emerald-50/95 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.16em] text-emerald-800 shadow-lg shadow-emerald-900/10">{{ school.boarding_policy }}</span>
+                </div>
+                <h1 class="school-hero-title text-white text-4xl md:text-5xl font-extrabold leading-tight tracking-tight drop-shadow-[0_6px_18px_rgba(0,0,0,0.45)]">{{ school.name }}</h1>
+                <p class="mt-3 text-sm md:text-lg font-medium text-slate-100 drop-shadow-[0_4px_12px_rgba(0,0,0,0.35)]">
+                  <i class="fas fa-location-dot mr-2 text-amber-300"></i>{{ school.sector }}, {{ school.district }}, {{ school.province }}
+                </p>
+                <div class="mt-3 flex items-center gap-3">
+                  <div class="flex text-amber-300">
+                    {% for i in range(1, 6) %}
+                      {% if i <= school.average_rating|round(0, 'floor') %}
+                        <i class="fas fa-star"></i>
+                      {% elif i - 1 < school.average_rating %}
+                        <i class="fas fa-star-half-alt"></i>
+                      {% else %}
+                        <i class="far fa-star opacity-70"></i>
+                      {% endif %}
+                    {% endfor %}
+                  </div>
+                  <span class="school-hero-rating text-white text-sm md:text-base">{{ school.average_rating|round(1) }} from {{ review_count }} approved review{{ '' if review_count == 1 else 's' }}</span>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-3 sm:flex sm:flex-wrap">
+                {% if current_user.is_authenticated and current_user.role == 'student' %}
+                <form action="{{ url_for('add_to_shortlist', school_id=school.id) }}" method="POST" class="sm:min-w-[180px]">
+                  <button type="submit" class="w-full rounded-full bg-amber-400 px-5 py-3 text-sm font-bold text-slate-900 transition hover:bg-amber-300">
+                    <i class="fas fa-heart mr-2"></i>Add to Shortlist
+                  </button>
+                </form>
+                {% endif %}
+                <a href="{{ url_for('compare_schools') }}" class="inline-flex items-center justify-center rounded-full bg-white/15 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/20 sm:min-w-[170px]">
+                  <i class="fas fa-scale-balanced mr-2"></i>Compare
+                </a>
+                {% if school.website %}
+                <a href="{{ school.website }}" target="_blank" class="inline-flex items-center justify-center rounded-full bg-blue-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-blue-700 sm:min-w-[170px]">
+                  <i class="fas fa-up-right-from-square mr-2"></i>Visit Website
+                </a>
+                {% endif %}
+                {% if school.fees_file %}
+                <a href="{{ url_for('static', filename=school.fees_file) }}" target="_blank" class="inline-flex items-center justify-center rounded-full bg-white/15 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/20 sm:min-w-[170px]">
+                  <i class="fas fa-file-arrow-down mr-2"></i>Download Fees
+                </a>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {% if photos|length > 1 %}
+        <div class="border-t border-slate-200 bg-slate-50 px-6 py-4">
+          <div class="flex gap-3 overflow-x-auto">
+            {% for photo in photos %}
+            <img src="{{ photo }}" alt="{{ school.name }} thumbnail {{ loop.index }}" class="h-20 w-28 flex-none rounded-2xl border border-slate-200 object-cover" />
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+      </div>
+
+      <div class="mt-8 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+        <div class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+          <p class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Program</p>
+          <p class="mt-2 text-lg font-bold text-slate-900">{{ school.education_program }}</p>
+        </div>
+        <div class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+          <p class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Boarding</p>
+          <p class="mt-2 text-lg font-bold text-slate-900">{{ school.boarding_policy }}</p>
+        </div>
+        <div class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+          <p class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Gender Policy</p>
+          <p class="mt-2 text-lg font-bold text-slate-900">{{ school.gender_policy }}</p>
+        </div>
+        <div class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+          <p class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Min Aggregate</p>
+          <p class="mt-2 text-lg font-bold text-slate-900">{% if school.min_aggregate %}{{ school.min_aggregate }}{% else %}Not listed{% endif %}</p>
+        </div>
+      </div>
+
+      <div class="mt-8 space-y-8">
+        <section class="rounded-[2rem] border border-slate-200 bg-white p-7 shadow-sm">
+          <div class="flex items-center justify-between gap-4">
+            <div>
+              <p class="text-sm font-semibold uppercase tracking-[0.2em] text-blue-700">Overview</p>
+              <h2 class="mt-2 text-2xl font-bold text-slate-900">About this school</h2>
+            </div>
+            {% if tags %}
+            <div class="hidden md:flex flex-wrap justify-end gap-2">
+              {% for tag in tags %}
+              <span class="rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-800">{{ tag }}</span>
+              {% endfor %}
+            </div>
+            {% endif %}
+          </div>
+          <div class="mt-5 prose max-w-none text-slate-600">
+            {{ school.description or "This school profile does not yet have a detailed description." }}
+          </div>
+          {% if tags %}
+          <div class="mt-5 flex flex-wrap gap-2 md:hidden">
+            {% for tag in tags %}
+            <span class="rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-800">{{ tag }}</span>
+            {% endfor %}
+          </div>
+          {% endif %}
+        </section>
+
+        <section class="rounded-[2rem] border border-slate-200 bg-white p-7 shadow-sm">
+          <p class="text-sm font-semibold uppercase tracking-[0.2em] text-blue-700">Academics</p>
+          <h2 class="mt-2 text-2xl font-bold text-slate-900">Academic details</h2>
+          {% if has_academic_info %}
+          <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div class="rounded-3xl bg-slate-50 p-5 border border-slate-200">
+              <h3 class="font-semibold text-slate-900">Education Program</h3>
+              <p class="mt-2 text-slate-600">{{ school.education_program }}</p>
+            </div>
+            <div class="rounded-3xl bg-slate-50 p-5 border border-slate-200">
+              <h3 class="font-semibold text-slate-900">Minimum Aggregate</h3>
+              <p class="mt-2 text-slate-600">{% if school.min_aggregate %}{{ school.min_aggregate }}{% else %}Not provided{% endif %}</p>
+            </div>
+            <div class="rounded-3xl bg-slate-50 p-5 border border-slate-200 md:col-span-2">
+              <h3 class="font-semibold text-slate-900">Subject Combinations</h3>
+              {% if combinations %}
+              <div class="mt-3 flex flex-wrap gap-2">
+                {% for combination in combinations %}
+                <span class="rounded-full bg-white px-3 py-1 text-sm font-medium text-slate-700 border border-slate-200">{{ combination }}</span>
+                {% endfor %}
+              </div>
+              {% else %}
+              <p class="mt-2 text-slate-600">Combination details have not been added yet.</p>
+              {% endif %}
+            </div>
+            <div class="rounded-3xl bg-slate-50 p-5 border border-slate-200 md:col-span-2">
+              <h3 class="font-semibold text-slate-900">Performance History</h3>
+              <p class="mt-2 text-slate-600">{{ school.performance_history or "Performance history has not been added yet." }}</p>
+            </div>
+          </div>
+          {% else %}
+          <div class="mt-6 rounded-3xl border border-dashed border-slate-300 bg-slate-50 p-6 text-slate-600">
+            Academic details for this school are still being completed.
+          </div>
+          {% endif %}
+        </section>
+
+        <section class="rounded-[2rem] border border-slate-200 bg-white p-7 shadow-sm">
+          <p class="text-sm font-semibold uppercase tracking-[0.2em] text-blue-700">Admissions & Costs</p>
+          <h2 class="mt-2 text-2xl font-bold text-slate-900">Fees and admissions</h2>
+          <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div class="rounded-3xl bg-slate-50 p-5 border border-slate-200">
+              <h3 class="font-semibold text-slate-900">Boarding Policy</h3>
+              <p class="mt-2 text-slate-600">{{ school.boarding_policy }}</p>
+            </div>
+            <div class="rounded-3xl bg-slate-50 p-5 border border-slate-200">
+              <h3 class="font-semibold text-slate-900">Ownership</h3>
+              <p class="mt-2 text-slate-600">{{ school.ownership }}</p>
+            </div>
+            <div class="rounded-3xl bg-slate-50 p-5 border border-slate-200 md:col-span-2">
+              <h3 class="font-semibold text-slate-900">Fees Breakdown</h3>
+              <p class="mt-2 text-slate-600">{{ school.fees_breakdown or "No fee breakdown has been added yet." }}</p>
+              {% if school.fees_file %}
+              <a href="{{ url_for('static', filename=school.fees_file) }}" target="_blank" class="mt-4 inline-flex items-center rounded-full bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700">
+                <i class="fas fa-file-arrow-down mr-2"></i>Download Fees PDF
+              </a>
+              {% endif %}
+            </div>
+          </div>
+        </section>
+
+        <section class="rounded-[2rem] border border-slate-200 bg-white p-7 shadow-sm">
+          <p class="text-sm font-semibold uppercase tracking-[0.2em] text-blue-700">Student Life</p>
+          <h2 class="mt-2 text-2xl font-bold text-slate-900">Activities and student experience</h2>
+          {% if activities %}
+          <div class="mt-6 flex flex-wrap gap-3">
+            {% for activity in activities %}
+            <span class="rounded-full bg-emerald-50 px-4 py-2 text-sm font-medium text-emerald-800 border border-emerald-100">
+              {{ activity }}
+            </span>
+            {% endfor %}
+          </div>
+          {% else %}
+          <div class="mt-6 rounded-3xl border border-dashed border-slate-300 bg-slate-50 p-6 text-slate-600">
+            Activities and clubs have not been listed yet.
+          </div>
+          {% endif %}
+        </section>
+
+        <section class="rounded-[2rem] border border-slate-200 bg-white p-7 shadow-sm">
+          <p class="text-sm font-semibold uppercase tracking-[0.2em] text-blue-700">Reviews</p>
+          <h2 class="mt-2 text-2xl font-bold text-slate-900">Reviews and community feedback</h2>
+
+          <div class="mt-6 rounded-3xl bg-slate-50 p-5 border border-slate-200">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+              <div>
+                <p class="text-4xl font-bold text-slate-900">{{ school.average_rating|round(1) }}</p>
+                <div class="mt-2 flex text-amber-400">
+                  {% for i in range(1, 6) %}
+                    {% if i <= school.average_rating|round(0, 'floor') %}
+                      <i class="fas fa-star"></i>
+                    {% elif i - 1 < school.average_rating %}
+                      <i class="fas fa-star-half-alt"></i>
+                    {% else %}
+                      <i class="far fa-star text-slate-300"></i>
+                    {% endif %}
+                  {% endfor %}
+                </div>
+                <p class="mt-2 text-sm text-slate-500">{{ review_count }} approved review{{ '' if review_count == 1 else 's' }}</p>
+              </div>
+              <div class="rounded-2xl bg-white px-5 py-4 border border-slate-200">
+                <p class="text-sm text-slate-500">Moderation status</p>
+                <p class="mt-1 font-semibold text-slate-900">New reviews are submitted first, then approved before appearing here.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-6 space-y-4">
+            {% if reviews %}
+              {% for review in reviews %}
+              <article class="rounded-3xl border border-slate-200 bg-slate-50 p-5">
+                <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+                  <div>
+                    <h3 class="font-semibold text-slate-900">{{ review.reviewer_name }}</h3>
+                    <p class="mt-1 text-xs uppercase tracking-[0.18em] text-slate-500">Reviewed on {{ review.submitted_at.strftime('%b %d, %Y') }}</p>
+                  </div>
+                  <div class="flex text-amber-400">
+                    {% for i in range(review.rating) %}<i class="fas fa-star"></i>{% endfor %}
+                    {% for i in range(5 - review.rating) %}<i class="far fa-star text-slate-300"></i>{% endfor %}
+                  </div>
+                </div>
+                <blockquote class="mt-4 border-l-4 border-blue-200 pl-4 text-slate-600 italic">
+                  {{ review.comment }}
+                </blockquote>
+              </article>
+              {% endfor %}
+            {% else %}
+              <div class="rounded-3xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center">
+                <i class="fas fa-comments text-4xl text-slate-300"></i>
+                <p class="mt-3 text-slate-600">Be the first to share a review for this school.</p>
+              </div>
+            {% endif %}
+          </div>
+
+          <div class="mt-8 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+            <h3 class="text-xl font-bold text-slate-900">Leave a review</h3>
+            <p class="mt-2 text-sm text-slate-500">Share your experience. New reviews are submitted for moderation before they appear publicly.</p>
+            <form method="POST" novalidate class="mt-6 space-y-4">
+              {{ form.hidden_tag() }}
+              <div>
+                <label for="{{ form.reviewer_name.id }}" class="mb-2 block text-sm font-semibold text-slate-700">{{ form.reviewer_name.label }}</label>
+                {{ form.reviewer_name(class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-200") }}
+                {% for error in form.reviewer_name.errors %}
+                <span class="mt-1 block text-sm text-red-500">{{ error }}</span>
+                {% endfor %}
+              </div>
+              <div>
+                <label for="{{ form.rating.id }}" class="mb-2 block text-sm font-semibold text-slate-700">{{ form.rating.label }}</label>
+                {{ form.rating(class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-200") }}
+                {% for error in form.rating.errors %}
+                <span class="mt-1 block text-sm text-red-500">{{ error }}</span>
+                {% endfor %}
+              </div>
+              <div>
+                <label for="{{ form.comment.id }}" class="mb-2 block text-sm font-semibold text-slate-700">{{ form.comment.label }}</label>
+                {{ form.comment(rows="4", class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-200") }}
+                {% for error in form.comment.errors %}
+                <span class="mt-1 block text-sm text-red-500">{{ error }}</span>
+                {% endfor %}
+              </div>
+              {{ form.submit(class="inline-flex items-center justify-center rounded-full border-0 bg-blue-600 px-6 py-3 font-semibold text-white transition hover:bg-blue-700 cursor-pointer shadow-md w-auto") }}
+            </form>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <aside class="xl:sticky xl:top-24 self-start space-y-6">
+      <div class="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
+        <p class="text-sm font-semibold uppercase tracking-[0.2em] text-blue-700">Quick facts</p>
+        <h2 class="mt-2 text-2xl font-bold text-slate-900">School snapshot</h2>
+        <ul class="mt-6 space-y-4 text-slate-600">
+          <li>
+            <span class="block text-xs uppercase tracking-wide text-slate-500">Location</span>
+            <span class="mt-1 block font-medium text-slate-900">{{ school.sector }}, {{ school.district }}, {{ school.province }}</span>
+          </li>
+          <li>
+            <span class="block text-xs uppercase tracking-wide text-slate-500">Program</span>
+            <span class="mt-1 block font-medium text-slate-900">{{ school.education_program }}</span>
+          </li>
+          <li>
+            <span class="block text-xs uppercase tracking-wide text-slate-500">Gender Policy</span>
+            <span class="mt-1 block font-medium text-slate-900">{{ school.gender_policy }}</span>
+          </li>
+          <li>
+            <span class="block text-xs uppercase tracking-wide text-slate-500">Ownership</span>
+            <span class="mt-1 block font-medium text-slate-900">{{ school.ownership }}</span>
+          </li>
+          <li>
+            <span class="block text-xs uppercase tracking-wide text-slate-500">Boarding</span>
+            <span class="mt-1 block font-medium text-slate-900">{{ school.boarding_policy }}</span>
+          </li>
+          {% if school.religious_affiliation %}
+          <li>
+            <span class="block text-xs uppercase tracking-wide text-slate-500">Religious Affiliation</span>
+            <span class="mt-1 block font-medium text-slate-900">{{ school.religious_affiliation }}</span>
+          </li>
+          {% endif %}
+        </ul>
+      </div>
+
+      {% if has_contact_info %}
+      <div class="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
+        <p class="text-sm font-semibold uppercase tracking-[0.2em] text-blue-700">Contact</p>
+        <h2 class="mt-2 text-2xl font-bold text-slate-900">Reach the school</h2>
+        <div class="mt-5 space-y-4 text-slate-600">
+          {% if school.phone %}
+          <div>
+            <span class="block text-xs uppercase tracking-wide text-slate-500">Phone</span>
+            <span class="mt-1 block font-medium text-slate-900">{{ school.phone }}</span>
+          </div>
+          {% endif %}
+          {% if school.email %}
+          <div>
+            <span class="block text-xs uppercase tracking-wide text-slate-500">Email</span>
+            <span class="mt-1 block font-medium text-slate-900">{{ school.email }}</span>
+          </div>
+          {% endif %}
+          {% if school.website %}
+          <div>
+            <span class="block text-xs uppercase tracking-wide text-slate-500">Website</span>
+            <a href="{{ school.website }}" target="_blank" class="mt-1 block font-medium text-blue-700 hover:text-blue-800">{{ school.website }}</a>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      {% endif %}
+
+      {% if current_user.is_authenticated and current_user.is_admin %}
+      <div class="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
+        <p class="text-sm font-semibold uppercase tracking-[0.2em] text-blue-700">Admin</p>
+        <h2 class="mt-2 text-2xl font-bold text-slate-900">Manage this profile</h2>
+        <div class="mt-5 flex flex-wrap gap-3">
+          <a href="{{ url_for('edit_school', school_id=school.id) }}" class="rounded-full bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700">
+            <i class="fas fa-edit mr-2"></i>Edit
+          </a>
+          <form action="{{ url_for('delete_school', school_id=school.id) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this school? This action cannot be undone.')">
+            <button type="submit" class="rounded-full bg-red-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-red-700">
+              <i class="fas fa-trash mr-2"></i>Delete
+            </button>
+          </form>
+        </div>
+      </div>
+      {% endif %}
+    </aside>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends 'base.html' %} {% block title %}{{ title }} - Path2Learn{% endblock
+%} {% block content %}
+<div class="container mx-auto p-8">
+  <h1 class="text-4xl font-bold mb-8 text-center text-blue-400">
+    How to Use Path2Learn
+  </h1>
+
+  <div class="max-w-4xl mx-auto space-y-8">
+    <div
+      class="bg-gray-800 p-6 rounded-lg shadow-lg flex items-start space-x-4"
+    >
+      <div
+        class="flex-shrink-0 w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center text-2xl font-bold"
+      >
+        1
+      </div>
+      <div>
+        <h3 class="text-2xl font-bold mb-2">Search for Schools</h3>
+        <p class="text-gray-300">
+          Use the search bar on the homepage to instantly look for schools by
+          name, location, or educational program. Our powerful search will give
+          you immediate results.
+        </p>
+      </div>
+    </div>
+
+    <div
+      class="bg-gray-800 p-6 rounded-lg shadow-lg flex items-start space-x-4"
+    >
+      <div
+        class="flex-shrink-0 w-12 h-12 bg-indigo-500 rounded-full flex items-center justify-center text-2xl font-bold"
+      >
+        2
+      </div>
+      <div>
+        <h3 class="text-2xl font-bold mb-2">Filter for Recommendations</h3>
+        <p class="text-gray-300">
+          Not sure where to start? Use our recommendation filters to narrow down
+          your options. Select a province, program type, or gender policy to get
+          a curated list of schools that match your specific criteria.
+        </p>
+      </div>
+    </div>
+
+    <div
+      class="bg-gray-800 p-6 rounded-lg shadow-lg flex items-start space-x-4"
+    >
+      <div
+        class="flex-shrink-0 w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-2xl font-bold"
+      >
+        3
+      </div>
+      <div>
+        <h3 class="text-2xl font-bold mb-2">Explore School Profiles</h3>
+        <p class="text-gray-300">
+          Click on any school to view its detailed profile. Here you will find
+          photos, a detailed description, contact information, website links,
+          and other critical facts to help you make your choice.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

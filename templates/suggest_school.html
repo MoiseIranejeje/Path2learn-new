@@ -1,0 +1,369 @@
+{% extends 'base.html' %} {% block title %}{{ title }} - Path2Learn{% endblock
+%} {% block content %}
+<div class="container mx-auto p-6">
+  <div class="max-w-4xl mx-auto">
+    <h1 class="text-4xl font-bold mb-4 text-center text-blue-400">
+      Suggest a New School
+    </h1>
+    <p class="text-center text-gray-300 mb-8">
+      Didn't Find Your School please enter info about it to add it and also if
+      you want to help us expand the number of school provide any info you have.
+    </p>
+
+    <form
+      method="POST"
+      novalidate
+      class="bg-gray-800 p-8 rounded-lg shadow-lg space-y-6"
+    >
+      {{ form.hidden_tag() }}
+
+      <h3 class="text-xl font-semibold border-b border-gray-600 pb-2">
+        Core Information
+      </h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label class="block mb-2 text-gray-300">{{ form.name.label }}*</label>
+          {{ form.name(class="w-full p-2 rounded bg-gray-700 border
+          border-gray-600 text-white") }} {% if form.name.errors %}
+          <ul class="text-red-400 text-sm mt-1">
+            {% for error in form.name.errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+          {% endif %}
+        </div>
+        <div>
+          <label class="block mb-2 text-gray-300"
+            >{{ form.education_program.label }}*</label
+          >
+          {{ form.education_program(class="w-full p-2 rounded bg-gray-700 border
+          border-gray-600 text-white") }} {% if form.education_program.errors %}
+          <ul class="text-red-400 text-sm mt-1">
+            {% for error in form.education_program.errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+          {% endif %}
+        </div>
+      </div>
+
+      <h3 class="text-xl font-semibold border-b border-gray-600 pb-2 mt-6">
+        School Location Details
+      </h3>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div>
+          <label class="block mb-2 text-gray-300"
+            >{{ form.province.label }}*</label
+          >
+          {{ form.province(id="province", class="w-full p-2 rounded bg-gray-700
+          border border-gray-600 text-white") }} {% if form.province.errors %}
+          <ul class="text-red-400 text-sm mt-1">
+            {% for error in form.province.errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+          {% endif %}
+        </div>
+        <div>
+          <label class="block mb-2 text-gray-300"
+            >{{ form.district.label }}*</label
+          >
+          {{ form.district(id="district", class="w-full p-2 rounded bg-gray-700
+          border border-gray-600 text-white") }} {% if form.district.errors %}
+          <ul class="text-red-400 text-sm mt-1">
+            {% for error in form.district.errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+          {% endif %}
+        </div>
+        <div>
+          <label class="block mb-2 text-gray-300"
+            >{{ form.sector.label }}*</label
+          >
+          {{ form.sector(id="sector", class="w-full p-2 rounded bg-gray-700
+          border border-gray-600 text-white") }} {% if form.sector.errors %}
+          <ul class="text-red-400 text-sm mt-1">
+            {% for error in form.sector.errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+          {% endif %}
+        </div>
+      </div>
+
+      <h3 class="text-xl font-semibold border-b border-gray-600 pb-2 mt-6">
+        Policies
+      </h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label class="block mb-2 text-gray-300"
+            >{{ form.gender_policy.label }}*</label
+          >
+          {{ form.gender_policy(class="w-full p-2 rounded bg-gray-700 border
+          border-gray-600 text-white") }} {% if form.gender_policy.errors %}
+          <ul class="text-red-400 text-sm mt-1">
+            {% for error in form.gender_policy.errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+          {% endif %}
+        </div>
+        <div>
+          <label class="block mb-2 text-gray-300"
+            >{{ form.ownership.label }}*</label
+          >
+          {{ form.ownership(class="w-full p-2 rounded bg-gray-700 border
+          border-gray-600 text-white") }} {% if form.ownership.errors %}
+          <ul class="text-red-400 text-sm mt-1">
+            {% for error in form.ownership.errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+          {% endif %}
+        </div>
+        <div>
+          <label class="block mb-1 text-sm text-gray-400"
+            >{{ form.boarding_policy.label }}</label
+          >
+          {{ form.boarding_policy(class="w-full p-2 rounded") }}
+        </div>
+      </div>
+
+      <h3 class="text-xl font-semibold border-b border-gray-600 pb-2 mt-6">
+        SCHOOL Description
+      </h3>
+      <div>
+        <label class="block mb-2 text-gray-300"
+          >{{ form.description.label }}*</label
+        >
+        {{ form.description(rows="4", class="w-full p-2 rounded bg-gray-700
+        border border-gray-600 text-white", placeholder="Describe the school its
+        life style and others in not more than 100 words.") }} {% if
+        form.description.errors %}
+        <ul class="text-red-400 text-sm mt-1">
+          {% for error in form.description.errors %}
+          <li>{{ error }}</li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+      </div>
+      <!-- ★★★ ADD THIS NEW DIV ★★★ -->
+      <div>
+        <label class="flex items-center text-lg font-semibold mb-2">
+          <i class="fas fa-futbol w-6 text-center mr-3 text-blue-400"></i>
+          {{ form.extracurriculars.label }}
+        </label>
+        {{ form.extracurriculars(rows="3", class="w-full p-2 rounded",
+        placeholder="List activities separated by commas, e.g., Football, Debate
+        Club, Music, Robotics") }}
+      </div>
+      <div>
+        <label class="block mb-2 text-gray-300">{{ form.photos.label }}*</label>
+        {{ form.photos(rows="3", class="w-full p-2 rounded bg-gray-700 border
+        border-gray-600 text-white", placeholder="e.g.,
+        https://example.com/image1.jpg") }} {% if form.photos.errors %}
+        <ul class="text-red-400 text-sm mt-1">
+          {% for error in form.photos.errors %}
+          <li>{{ error }}</li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+      </div>
+
+      <h3 class="text-xl font-semibold border-b border-gray-600 pb-2 mt-6">
+        School Contact information
+      </h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label class="block mb-2 text-gray-300">{{ form.phone.label }}</label>
+          {{ form.phone(class="w-full p-2 rounded bg-gray-700 border
+          border-gray-600 text-white") }}
+        </div>
+        <div>
+          <label class="block mb-2 text-gray-300"
+            >{{ form.website.label }}</label
+          >
+          {{ form.website(class="w-full p-2 rounded bg-gray-700 border
+          border-gray-600 text-white",
+          placeholder="https://www.school-website.rw") }}
+        </div>
+      </div>
+
+      <h3 class="text-xl font-semibold border-b border-gray-600 pb-2 mt-6">
+        Other Information
+      </h3>
+      <div>
+        <label class="block mb-2 text-gray-300"
+          >{{ form.religious_affiliation.label }}</label
+        >
+        {{ form.religious_affiliation(class="w-full p-2 rounded bg-gray-700
+        border border-gray-600 text-white") }}
+      </div>
+
+      <div
+        class="bg-indigo-900 bg-opacity-50 border-l-4 border-indigo-400 text-indigo-100 p-4 rounded-r-lg"
+        role="alert"
+      >
+        <div class="flex">
+          <div class="py-1"><i class="fas fa-info-circle mr-3"></i></div>
+          <div>
+            <p class="font-bold">Important Files</p>
+            <p class="text-sm">
+              If you have any school fees file or other important files for your
+              school email them to:
+              <strong class="font-mono">info.path2learn@gmail.com</strong>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="text-xl font-semibold border-b border-gray-600 pb-2 mt-6">
+        Your Information (Optional)
+      </h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label class="block mb-2 text-gray-300"
+            >{{ form.suggester_name.label }}</label
+          >
+          {{ form.suggester_name(class="w-full p-2 rounded bg-gray-700 border
+          border-gray-600 text-white") }}
+        </div>
+        <div>
+          <label class="block mb-2 text-gray-300"
+            >{{ form.suggester_email.label }}</label
+          >
+          {{ form.suggester_email(class="w-full p-2 rounded bg-gray-700 border
+          border-gray-600 text-white", placeholder="For updates on your
+          submission") }} {% if form.suggester_email.errors %}
+          <ul class="text-red-400 text-sm mt-1">
+            {% for error in form.suggester_email.errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="text-center pt-4">
+        {{ form.submit(class="bg-blue-600 text-white font-bold px-8 py-3
+        rounded-lg hover:bg-blue-700 transition cursor-pointer") }}
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Initial load for districts if a province is already selected (e.g., after a validation error)
+    const initialProvince = document.getElementById("province").value;
+    if (initialProvince) {
+      fetchDistricts(
+        initialProvince,
+        document.getElementById("district").value
+      );
+    }
+
+    // Initial load for sectors if a district is already selected
+    const initialDistrict = document.getElementById("district").value;
+    if (initialDistrict) {
+      fetchSectors(
+        document.getElementById("province").value,
+        initialDistrict,
+        document.getElementById("sector").value
+      );
+    }
+
+    document.getElementById("province").addEventListener("change", function () {
+      const province = this.value;
+      fetchDistricts(province);
+    });
+
+    document.getElementById("district").addEventListener("change", function () {
+      const province = document.getElementById("province").value;
+      const district = this.value;
+      fetchSectors(province, district);
+    });
+
+    function fetchDistricts(province, selectedDistrict = null) {
+      const districtSelect = document.getElementById("district");
+      const sectorSelect = document.getElementById("sector");
+
+      districtSelect.innerHTML = '<option value="">Loading...</option>';
+      sectorSelect.innerHTML =
+        '<option value="">Select District First</option>';
+
+      if (!province) {
+        districtSelect.innerHTML =
+          '<option value="">Select Province First</option>';
+        return;
+      }
+
+      fetch(`/api/districts?province=${encodeURIComponent(province)}`)
+        .then((response) => response.json())
+        .then((districts) => {
+          districtSelect.innerHTML =
+            '<option value="">Select District</option>';
+          districts.forEach((district) => {
+            const option = document.createElement("option");
+            option.value = district;
+            option.textContent = district;
+            if (selectedDistrict === district) {
+              option.selected = true;
+            }
+            districtSelect.appendChild(option);
+          });
+          // If a district was pre-selected, trigger sector load
+          if (selectedDistrict && selectedDistrict !== "") {
+            fetchSectors(
+              province,
+              selectedDistrict,
+              document.getElementById("sector").value
+            );
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching districts:", error);
+          districtSelect.innerHTML =
+            '<option value="">Error loading districts</option>';
+        });
+    }
+
+    function fetchSectors(province, district, selectedSector = null) {
+      const sectorSelect = document.getElementById("sector");
+
+      sectorSelect.innerHTML = '<option value="">Loading...</option>';
+
+      if (!province || !district) {
+        sectorSelect.innerHTML =
+          '<option value="">Select District First</option>';
+        return;
+      }
+
+      fetch(
+        `/api/sectors?province=${encodeURIComponent(
+          province
+        )}&district=${encodeURIComponent(district)}`
+      )
+        .then((response) => response.json())
+        .then((sectors) => {
+          sectorSelect.innerHTML = '<option value="">Select Sector</option>';
+          sectors.forEach((sector) => {
+            const option = document.createElement("option");
+            option.value = sector;
+            option.textContent = sector;
+            if (selectedSector === sector) {
+              option.selected = true;
+            }
+            sectorSelect.appendChild(option);
+          });
+        })
+        .catch((error) => {
+          console.error("Error fetching sectors:", error);
+          sectorSelect.innerHTML =
+            '<option value="">Error loading sectors</option>';
+        });
+    }
+  });
+</script>
+{% endblock %}

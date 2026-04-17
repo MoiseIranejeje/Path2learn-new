@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block title %}About Us - Path2Learn{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-16">
+    <!-- Header -->
+    <div class="text-center mb-12">
+        <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">About Path2Learn</h1>
+        <p class="text-lg text-gray-400 max-w-3xl mx-auto">
+            A dedicated platform designed to bridge the information gap for students and parents in Rwanda, 
+            helping them discover the perfect educational institutions.
+        </p>
+    </div>
+
+    <!-- Mission & Vision Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto mb-16">
+        <div class="bg-gray-800 rounded-2xl p-8 shadow-xl border border-gray-700 hover:border-yellow-400 transition">
+            <div class="text-yellow-400 text-4xl mb-4">
+                <i class="fas fa-bullseye"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-white mb-4">Our Mission</h2>
+            <p class="text-gray-400 leading-relaxed">
+                To provide a comprehensive, easy-to-use, and reliable database of schools across Rwanda, 
+                empowering users with the information they need to make informed decisions about education.
+            </p>
+        </div>
+
+        <div class="bg-gray-800 rounded-2xl p-8 shadow-xl border border-gray-700 hover:border-yellow-400 transition">
+            <div class="text-yellow-400 text-4xl mb-4">
+                <i class="fas fa-eye"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-white mb-4">Our Vision</h2>
+            <p class="text-gray-400 leading-relaxed">
+                A future where every Rwandan student can easily find a school that matches their potential, 
+                and every parent can confidently support their child's educational journey.
+            </p>
+        </div>
+    </div>
+
+    <!-- Tech Inspires Section -->
+    <div class="bg-gray-800 rounded-2xl p-10 shadow-xl border border-gray-700 max-w-4xl mx-auto text-center">
+        <div class="text-yellow-400 text-5xl mb-4">
+            <i class="fas fa-code-branch"></i>
+        </div>
+        <h2 class="text-3xl font-bold text-white mb-4">Developed by Tech Inspires Organisation</h2>
+        <p class="text-gray-400 text-lg leading-relaxed">
+            Path2Learn is a flagship project from a group of visionaries committed to leveraging technology 
+            for social good in Rwanda. This platform is our contribution to that vision.
+        </p>
+        <div class="mt-8 flex justify-center space-x-4">
+            <a href="{{ url_for('team') }}" class="bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-3 px-8 rounded-full transition shadow-lg">
+                Meet the Team
+            </a>
+            <a href="{{ url_for('contact') }}" class="bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 px-8 rounded-full transition">
+                Contact Us
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,177 @@
+{% extends 'base.html' %} {% block title %}{{ title }} - Path2Learn{% endblock
+%} {% block content %}
+<div class="container mx-auto p-6">
+  <h1 class="text-3xl font-bold mb-6">Manage School Suggestions</h1>
+
+  {% if suggestions %}
+  <div class="bg-gray-800 rounded-xl shadow-lg overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-700">
+        <thead class="bg-gray-900">
+          <tr>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"
+            >
+              School Name
+            </th>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"
+            >
+              Location
+            </th>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"
+            >
+              Submitted
+            </th>
+            <th
+              class="px-6 py-3 text-center text-xs font-medium text-gray-300 uppercase tracking-wider"
+            >
+              Actions
+            </th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-700">
+          {% for suggestion in suggestions %}
+          <tr class="hover:bg-gray-700">
+            <td class="px-6 py-4 whitespace-nowrap">{{ suggestion.name }}</td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              {{ suggestion.district }}, {{ suggestion.province }}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
+              {{ suggestion.submitted_at.strftime('%Y-%m-%d') }}
+            </td>
+            <td
+              class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium"
+            >
+              <div class="flex justify-center items-center space-x-2">
+                <!-- View Details Button (triggers modal) -->
+                <button
+                  type="button"
+                  class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
+                  data-bs-toggle="modal"
+                  data-bs-target="#suggestionModal-{{ suggestion.id }}"
+                >
+                  <i class="fas fa-eye mr-1"></i> View
+                </button>
+                <!-- Approve Form -->
+                <form
+                  action="{{ url_for('approve_suggestion', suggestion_id=suggestion.id) }}"
+                  method="POST"
+                  onsubmit="return confirm('Are you sure you want to approve and add this school?')"
+                >
+                  <button
+                    type="submit"
+                    class="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
+                  >
+                    <i class="fas fa-check mr-1"></i> Approve
+                  </button>
+                </form>
+                <!-- Reject Form -->
+                <form
+                  action="{{ url_for('reject_suggestion', suggestion_id=suggestion.id) }}"
+                  method="POST"
+                  onsubmit="return confirm('Are you sure you want to reject this suggestion? This cannot be undone.')"
+                >
+                  <button
+                    type="submit"
+                    class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
+                  >
+                    <i class="fas fa-times mr-1"></i> Reject
+                  </button>
+                </form>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Modal for Each Suggestion -->
+          <div
+            class="modal fade"
+            id="suggestionModal-{{ suggestion.id }}"
+            tabindex="-1"
+            aria-labelledby="modalLabel-{{ suggestion.id }}"
+            aria-hidden="true"
+          >
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="modalLabel-{{ suggestion.id }}">
+                    Suggestion Details: {{ suggestion.name }}
+                  </h5>
+                  <button
+                    type="button"
+                    class="btn-close btn-close-white"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                  ></button>
+                </div>
+                <div class="modal-body">
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                      <strong>Province:</strong> {{ suggestion.province }}
+                    </li>
+                    <li class="list-group-item">
+                      <strong>District:</strong> {{ suggestion.district }}
+                    </li>
+                    <li class="list-group-item">
+                      <strong>Sector:</strong> {{ suggestion.sector }}
+                    </li>
+                    <li class="list-group-item">
+                      <strong>Program:</strong> {{ suggestion.education_program
+                      }}
+                    </li>
+                    <li class="list-group-item">
+                      <strong>Ownership:</strong> {{ suggestion.ownership }}
+                    </li>
+                    <li class="list-group-item">
+                      <strong>Gender Policy:</strong> {{
+                      suggestion.gender_policy }}
+                    </li>
+                    <li class="list-group-item">
+                      <strong>Description:</strong>
+                      <p class="mt-1">{{ suggestion.description }}</p>
+                    </li>
+                    <li class="list-group-item">
+                      <strong>Photo URLs:</strong>
+                      <p class="mt-1 font-mono text-xs">
+                        {{ suggestion.photos }}
+                      </p>
+                    </li>
+                    <li class="list-group-item bg-gray-700">
+                      <strong>Suggester Name:</strong> {{
+                      suggestion.suggester_name or 'N/A' }}
+                    </li>
+                    <li class="list-group-item bg-gray-700">
+                      <strong>Suggester Email:</strong> {{
+                      suggestion.suggester_email or 'N/A' }}
+                    </li>
+                  </ul>
+                </div>
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% else %}
+  <div class="text-center py-16">
+    <i class="fas fa-inbox fa-4x text-gray-500 mb-4"></i>
+    <h2 class="text-2xl font-bold">All Clear!</h2>
+    <p class="text-gray-400">
+      There are no new school suggestions pending review.
+    </p>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }} - Path2Learn{% endblock %}
+
+{% block content %}
+<div class="container mx-auto p-6">
+  <h1 class="text-3xl font-bold mb-6 text-center text-blue-400">{{ title }}</h1>
+  
+  {# The form action will be empty for "add" and point to the "edit" route when editing #}
+  <form method="POST" enctype="multipart/form-data" class="bg-gray-800 p-8 rounded-lg shadow-lg space-y-6">
+    
+    <!-- ★★★ ALL INPUTS NOW HAVE LOGIC TO PRE-FILL DATA ★★★ -->
+
+    <!-- School Information -->
+    <h3 class="text-xl font-semibold border-b border-gray-700 pb-2">School Information</h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <label for="name" class="block mb-2">School Name*</label>
+        <input type="text" id="name" name="name" required class="w-full p-2 rounded" value="{{ school.name if school else '' }}">
+      </div>
+      <div>
+        <label for="education_program" class="block mb-2">Education Program*</label>
+        <select id="education_program" name="education_program" required class="w-full p-2 rounded">
+          <option value="Rwandan General Education (REB Curriculum)" {% if school and school.education_program == 'Rwandan General Education (REB Curriculum)' %}selected{% endif %}>REB Curriculum</option>
+          <option value="Cambridge International Education (CIE)" {% if school and school.education_program == 'Cambridge International Education (CIE)' %}selected{% endif %}>Cambridge (CIE)</option>
+          <option value="Technical and Vocational Education and Training (TVET)" {% if school and school.education_program == 'Technical and Vocational Education and Training (TVET)' %}selected{% endif %}>TVET</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Location Information -->
+    <h3 class="text-xl font-semibold border-b border-gray-700 pb-2 mt-4">Location</h3>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div>
+        <label for="province" class="block mb-2">Province*</label>
+        <select id="province" name="province" required class="w-full p-2 rounded">
+          <option value="">Select Province</option>
+          {% for p in provinces %}<option value="{{ p }}" {% if school and school.province == p %}selected{% endif %}>{{ p }}</option>{% endfor %}
+        </select>
+      </div>
+      <div>
+        <label for="district" class="block mb-2">District*</label>
+        <select id="district" name="district" required class="w-full p-2 rounded">
+            <option value="{{ school.district if school }}">{{ school.district if school else 'Select Province First' }}</option>
+        </select>
+      </div>
+      <div>
+        <label for="sector" class="block mb-2">Sector*</label>
+        <select id="sector" name="sector" required class="w-full p-2 rounded">
+            <option value="{{ school.sector if school }}">{{ school.sector if school else 'Select District First' }}</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Policies -->
+    <h3 class="text-xl font-semibold border-b border-gray-700 pb-2 mt-4">Policies</h3>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div>
+            <label for="gender_policy" class="block mb-2">Gender Policy*</label>
+            <select id="gender_policy" name="gender_policy" required class="w-full p-2 rounded">
+              <option value="Mixed" {% if school and school.gender_policy == 'Mixed' %}selected{% endif %}>Mixed</option>
+              <option value="Boys Only" {% if school and school.gender_policy == 'Boys Only' %}selected{% endif %}>Boys Only</option>
+              <option value="Girls Only" {% if school and school.gender_policy == 'Girls Only' %}selected{% endif %}>Girls Only</option>
+            </select>
+        </div>
+        <div>
+            <label for="ownership" class="block mb-2">Ownership*</label>
+            <select id="ownership" name="ownership" required class="w-full p-2 rounded">
+              <option value="Public" {% if school and school.ownership == 'Public' %}selected{% endif %}>Public</option>
+              <option value="Private" {% if school and school.ownership == 'Private' %}selected{% endif %}>Private</option>
+              <option value="Government -Aided (Religious)" {% if school and school.ownership == 'Government -Aided (Religious)' %}selected{% endif %}>Govt. Aided</option>
+            </select>
+        </div>
+        <div>
+            <label for="boarding_policy" class="block mb-2">Boarding Policy*</label>
+            <select id="boarding_policy" name="boarding_policy" required class="w-full p-2 rounded">
+              <option value="Day School" {% if school and school.boarding_policy == 'Day School' %}selected{% endif %}>Day School</option>
+              <option value="Boarding School" {% if school and school.boarding_policy == 'Boarding School' %}selected{% endif %}>Boarding School</option>
+              <option value="Day and Boarding" {% if school and school.boarding_policy == 'Day and Boarding' %}selected{% endif %}>Day and Boarding</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Details -->
+    <h3 class="text-xl font-semibold border-b border-gray-700 pb-2 mt-4">Details</h3>
+    <div>
+        <label for="description" class="block mb-2">Description</label>
+        <textarea id="description" name="description" class="w-full p-2 rounded" rows="4">{{ school.description if school and school.description }}</textarea>
+    </div>
+    <div>
+        <label for="extracurriculars" class="block mb-2">Extracurriculars (Comma-separated)</label>
+        <input type="text" id="extracurriculars" name="extracurriculars" class="w-full p-2 rounded" value="{{ school.extracurriculars if school and school.extracurriculars }}">
+    </div>
+    <div>
+      <label for="tags" class="block mb-2">Smart Tags (Comma-separated)</label>
+      <input type="text" id="tags" name="tags" class="w-full p-2 rounded" value="{{ school.tags if school and school.tags }}">
+    </div>
+
+    <!-- ★★★ NEW: MINIMUM AGGREGATE SCORE ★★★ -->
+    <div>
+      <label for="min_aggregate" class="block mb-2 text-green-400">Min. Aggregate Score Requirement</label>
+      <p class="text-xs text-gray-500 mb-1">Enter the cut-off score (e.g., 15). Leave 0 or blank if no strict requirement.</p>
+      <input type="number" id="min_aggregate" name="min_aggregate" class="w-full p-2 rounded border border-gray-600 focus:border-green-500" value="{{ school.min_aggregate if school else 0 }}">
+    </div>
+
+    <div>
+        <label for="image_urls" class="block mb-2">Image URLs (Comma-separated)</label>
+        <textarea id="image_urls" name="image_urls" class="w-full p-2 rounded" rows="3">{{ school.photos if school and school.photos }}</textarea>
+    </div>
+
+    <div class="text-center pt-4">
+      <button type="submit" class="bg-blue-600 text-white font-bold px-8 py-3 rounded-lg hover:bg-blue-700">
+        {{ 'Update School' if school else 'Add School' }}
+      </button>
+    </div>
+  </form>
+</div>
+
+<script>
+  // Location dropdown scripts (unchanged)
+  document.getElementById("province").addEventListener("change", function () {
+    const province = this.value;
+    fetch(`/api/districts?province=${encodeURIComponent(province)}`)
+      .then((response) => response.json())
+      .then((districts) => {
+        const districtSelect = document.getElementById("district");
+        districtSelect.innerHTML = '<option value="">Select District</option>';
+        districts.forEach((district) => {
+          districtSelect.innerHTML += `<option value="${district}">${district}</option>`;
+        });
+        document.getElementById("sector").innerHTML =
+          '<option value="">Select Sector</option>';
+      });
+  });
+
+  document.getElementById("district").addEventListener("change", function () {
+    const province = document.getElementById("province").value;
+    const district = this.value;
+    fetch(
+      `/api/sectors?province=${encodeURIComponent(
+        province
+      )}&district=${encodeURIComponent(district)}`
+    )
+      .then((response) => response.json())
+      .then((sectors) => {
+        const sectorSelect = document.getElementById("sector");
+        sectorSelect.innerHTML = '<option value="">Select Sector</option>';
+        sectors.forEach((sector) => {
+          sectorSelect.innerHTML += `<option value="${sector}">${sector}</option>`;
+        });
+      });
+  });
+</script>
+{% endblock %}

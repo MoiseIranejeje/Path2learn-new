@@ -1,0 +1,318 @@
+{% extends 'base.html' %}
+
+{% block title %}Path2Learn - Rwanda's Smart Education Platform{% endblock %}
+
+{% block content %}
+<div class="bg-slate-50 text-slate-900">
+    <section class="relative overflow-hidden bg-gradient-to-br from-[#f9f7f1] via-white to-[#eef4ff]">
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(37,99,235,0.14),_transparent_36%),radial-gradient(circle_at_bottom_left,_rgba(234,179,8,0.16),_transparent_28%)]"></div>
+        <div class="container mx-auto px-4 py-16 lg:py-24 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="text-center lg:text-left">
+                    <span class="inline-flex items-center rounded-full bg-white/90 px-4 py-2 text-sm font-semibold text-blue-700 shadow-sm ring-1 ring-slate-200">
+                        <i class="fas fa-compass mr-2 text-amber-500"></i>
+                        Discover schools with clearer data and better guidance
+                    </span>
+                    <h1 class="mt-6 text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-slate-900 animate-fadeInUp">
+                        Find the right secondary school in Rwanda
+                    </h1>
+                    <p class="mt-6 text-lg md:text-xl text-slate-600 max-w-2xl lg:mx-0 mx-auto animate-fadeInUp" style="animation-delay: 0.08s;">
+                        Explore schools, compare options, and move from curiosity to a confident shortlist with Path2Learn's search and parent-student planning tools.
+                    </p>
+                    <div class="mt-8 flex flex-col sm:flex-row justify-center lg:justify-start gap-4 animate-fadeInUp" style="animation-delay: 0.16s;">
+                        <a href="{{ url_for('smart_search') }}" class="inline-flex items-center justify-center rounded-full bg-blue-600 px-8 py-3.5 font-semibold text-white shadow-lg shadow-blue-200 transition hover:-translate-y-1 hover:bg-blue-700">
+                            <i class="fas fa-magic mr-2"></i> Start Smart Search
+                        </a>
+                        <a href="{{ url_for('advanced_search') }}" class="inline-flex items-center justify-center rounded-full border border-blue-200 bg-white px-8 py-3.5 font-semibold text-[#16324f] transition hover:-translate-y-1 hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700">
+                            Browse Schools
+                        </a>
+                    </div>
+                    <div class="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-4 animate-fadeInUp" style="animation-delay: 0.24s;">
+                        <div class="rounded-2xl bg-white/80 p-4 shadow-sm ring-1 ring-slate-200">
+                            <p class="text-2xl font-bold text-slate-900">{{ school_count }}</p>
+                            <p class="mt-1 text-sm text-slate-600">Schools ready to explore</p>
+                        </div>
+                        <div class="rounded-2xl bg-white/80 p-4 shadow-sm ring-1 ring-slate-200">
+                            <p class="text-2xl font-bold text-slate-900">{{ approved_review_count }}</p>
+                            <p class="mt-1 text-sm text-slate-600">Approved reviews</p>
+                        </div>
+                        <div class="rounded-2xl bg-white/80 p-4 shadow-sm ring-1 ring-slate-200">
+                            <p class="text-2xl font-bold text-slate-900">{{ highest_rated_schools|length }}</p>
+                            <p class="mt-1 text-sm text-slate-600">Top rated schools surfaced</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="animate-fadeInUp" style="animation-delay: 0.2s;">
+                    <div class="relative mx-auto max-w-2xl hero-illustration-wrap">
+                        <div class="hero-pulse absolute -left-10 top-12 h-32 w-32 rounded-full bg-blue-200/50 blur-3xl"></div>
+                        <div class="hero-pulse absolute -right-8 bottom-10 h-36 w-36 rounded-full bg-amber-200/50 blur-3xl" style="animation-delay: 1.4s;"></div>
+
+                        <div class="absolute right-6 top-6 hero-orbit hidden md:block">
+                            <div class="flex h-11 w-11 items-center justify-center rounded-full bg-white text-amber-500 shadow-lg ring-1 ring-slate-200">
+                                <i class="fas fa-star text-sm"></i>
+                            </div>
+                        </div>
+
+                        <div class="rounded-[2rem] bg-white/95 p-4 shadow-2xl shadow-slate-300/40 ring-1 ring-slate-200 backdrop-blur-sm">
+                            <div class="rounded-[1.5rem] bg-gradient-to-br from-[#f8fbff] via-white to-[#fff8e8] p-6 md:p-8">
+                                <img
+                                    src="{{ url_for('static', filename='images/image.svg') }}"
+                                    alt="Path2Learn education illustration"
+                                    class="h-[420px] w-full object-contain drop-shadow-[0_24px_40px_rgba(37,99,235,0.14)]"
+                                >
+                            </div>
+                        </div>
+                        <div class="absolute -bottom-6 left-4 rounded-2xl bg-white px-5 py-4 shadow-xl ring-1 ring-slate-200 hidden md:block">
+                            <p class="text-xs uppercase tracking-[0.2em] text-slate-500">Discovery focus</p>
+                            <p class="mt-1 font-semibold text-slate-900">Search by province, program, and fit</p>
+                        </div>
+                        <div class="absolute -top-6 right-4 rounded-2xl bg-[#16324f] px-5 py-4 text-white shadow-xl hidden md:block">
+                            <p class="text-xs uppercase tracking-[0.2em] text-blue-100">Built for families</p>
+                            <p class="mt-1 font-semibold">Compare, shortlist, and review together</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-16">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-10">
+                <div>
+                    <p class="text-sm font-semibold uppercase tracking-[0.2em] text-blue-700">Explore faster</p>
+                    <h2 class="mt-2 text-3xl md:text-4xl font-bold text-slate-900">School discovery at the center</h2>
+                    <p class="mt-3 max-w-2xl text-slate-600">
+                        Start with recently added schools, then branch into the highest rated and most reviewed options already available in the platform.
+                    </p>
+                </div>
+                <a href="{{ url_for('advanced_search') }}" class="inline-flex items-center font-semibold text-blue-700 hover:text-blue-800">
+                    Browse all schools <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            </div>
+
+            {% if featured_schools %}
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                <div class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h3 class="text-2xl font-bold text-slate-900">Latest schools</h3>
+                            <p class="text-sm text-slate-500">Newest additions to the platform</p>
+                        </div>
+                        <span class="rounded-full bg-blue-50 px-3 py-1 text-sm font-semibold text-blue-700">{{ featured_schools|length }} available</span>
+                    </div>
+                    <div class="grid grid-cols-1 gap-5">
+                        {% for school in featured_schools[:3] %}
+                        <article class="school-card overflow-hidden rounded-3xl border border-slate-200 bg-slate-50 shadow-sm">
+                            <div class="grid grid-cols-1 md:grid-cols-[220px_1fr]">
+                                <div class="relative h-56 md:h-full">
+                                    {% if school.photos %}
+                                        {% set photo_list = school.photos.split(',') %}
+                                        <img src="{{ photo_list[0].strip() }}" alt="{{ school.name }}" class="h-full w-full object-cover">
+                                    {% else %}
+                                        <img src="https://images.unsplash.com/photo-1562774053-701939374585?ixlib=rb-4.0.3&auto=format&fit=crop&w=1786&q=80" alt="School campus" class="h-full w-full object-cover">
+                                    {% endif %}
+                                    <span class="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-slate-700 shadow-sm">
+                                        {{ school.ownership }}
+                                    </span>
+                                </div>
+                                <div class="p-6">
+                                    <div class="flex flex-wrap gap-2 mb-3">
+                                        <span class="rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-800">{{ school.education_program }}</span>
+                                        <span class="rounded-full bg-slate-200 px-3 py-1 text-xs font-semibold text-slate-700">{{ school.gender_policy }}</span>
+                                    </div>
+                                    <h4 class="text-xl font-bold text-slate-900">{{ school.name }}</h4>
+                                    <p class="mt-2 text-sm text-slate-600">
+                                        <i class="fas fa-location-dot mr-2 text-rose-500"></i>{{ school.district }}, {{ school.province }}
+                                    </p>
+                                    <p class="mt-3 text-sm text-slate-600">
+                                        {% if school.description %}
+                                            {{ school.description[:150] }}{% if school.description|length > 150 %}...{% endif %}
+                                        {% else %}
+                                            Explore this school's location, programs, and profile details to see whether it belongs on your shortlist.
+                                        {% endif %}
+                                    </p>
+                                    <div class="mt-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                                        <span class="text-sm text-slate-500">Open the profile for details, reviews, and shortlist actions.</span>
+                                        <a href="{{ url_for('school_detail', school_id=school.id) }}" class="inline-flex items-center font-semibold text-blue-700 hover:text-blue-800">
+                                            View details <i class="fas fa-chevron-right ml-2 text-xs"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 gap-6">
+                    <div class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+                        <h3 class="text-2xl font-bold text-slate-900">Top rated schools</h3>
+                        <p class="mt-2 text-sm text-slate-500">Schools with the strongest approved review scores</p>
+                        <div class="mt-5 space-y-4">
+                            {% if highest_rated_schools %}
+                                {% for school in highest_rated_schools %}
+                                <a href="{{ url_for('school_detail', school_id=school.id) }}" class="block rounded-2xl border border-slate-200 bg-slate-50 p-4 transition hover:border-blue-300 hover:bg-blue-50">
+                                    <div class="flex items-start justify-between gap-4">
+                                        <div>
+                                            <h4 class="font-semibold text-slate-900">{{ school.name }}</h4>
+                                            <p class="mt-1 text-sm text-slate-600">{{ school.district }}, {{ school.province }}</p>
+                                        </div>
+                                        <div class="text-right">
+                                            <p class="text-sm font-semibold text-amber-500"><i class="fas fa-star mr-1"></i>{{ school.average_rating }}</p>
+                                            <p class="text-xs text-slate-500">{{ school.education_program }}</p>
+                                        </div>
+                                    </div>
+                                </a>
+                                {% endfor %}
+                            {% else %}
+                                <div class="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-5 text-sm text-slate-600">
+                                    No approved reviews yet. As reviews are approved, this section will highlight the strongest-rated schools automatically.
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+                        <h3 class="text-2xl font-bold text-slate-900">Most reviewed schools</h3>
+                        <p class="mt-2 text-sm text-slate-500">Schools attracting the most community feedback</p>
+                        <div class="mt-5 space-y-4">
+                            {% if most_popular_schools %}
+                                {% for school in most_popular_schools %}
+                                <a href="{{ url_for('school_detail', school_id=school.id) }}" class="flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50 p-4 transition hover:border-blue-300 hover:bg-blue-50">
+                                    <div>
+                                        <h4 class="font-semibold text-slate-900">{{ school.name }}</h4>
+                                        <p class="mt-1 text-sm text-slate-600">{{ school.ownership }} school in {{ school.province }}</p>
+                                    </div>
+                                    <span class="rounded-full bg-slate-900 px-3 py-1 text-xs font-semibold text-white">See profile</span>
+                                </a>
+                                {% endfor %}
+                            {% else %}
+                                <div class="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-5 text-sm text-slate-600">
+                                    Review activity is still growing. Visitors can still browse schools and suggest new ones today.
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="rounded-3xl border border-dashed border-slate-300 bg-white p-12 text-center shadow-sm">
+                <i class="fas fa-school text-4xl text-slate-400"></i>
+                <h3 class="mt-4 text-2xl font-bold text-slate-900">Schools coming soon</h3>
+                <p class="mt-3 text-slate-600">The discovery hub is ready. Be the first to help grow it by suggesting a school for review.</p>
+                <a href="{{ url_for('suggest_school') }}" class="mt-6 inline-flex items-center rounded-full bg-blue-600 px-6 py-3 font-semibold text-white transition hover:bg-blue-700">
+                    Suggest a School
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <section class="bg-white py-16 border-y border-slate-200">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <p class="text-sm font-semibold uppercase tracking-[0.2em] text-blue-700">What Path2Learn helps you do</p>
+                <h2 class="mt-2 text-3xl md:text-4xl font-bold text-slate-900">Make school choices with better context</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="rounded-3xl border border-slate-200 bg-slate-50 p-8 shadow-sm">
+                    <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-100 text-2xl text-blue-700">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <h3 class="mt-6 text-xl font-bold text-slate-900">Search with real filters</h3>
+                    <p class="mt-3 text-slate-600">Browse by province, district, ownership, and program so discovery starts with the schools that fit your situation.</p>
+                </div>
+                <div class="rounded-3xl border border-slate-200 bg-slate-50 p-8 shadow-sm">
+                    <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-100 text-2xl text-emerald-700">
+                        <i class="fas fa-scale-balanced"></i>
+                    </div>
+                    <h3 class="mt-6 text-xl font-bold text-slate-900">Compare before deciding</h3>
+                    <p class="mt-3 text-slate-600">Review school profiles, ratings, and key characteristics side by side before you commit to a shortlist.</p>
+                </div>
+                <div class="rounded-3xl border border-slate-200 bg-slate-50 p-8 shadow-sm">
+                    <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-100 text-2xl text-amber-700">
+                        <i class="fas fa-people-arrows"></i>
+                    </div>
+                    <h3 class="mt-6 text-xl font-bold text-slate-900">Plan as a family</h3>
+                    <p class="mt-3 text-slate-600">Students can shortlist schools and parents can review, comment, and approve with a shared decision flow.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-16">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-8">
+                <div class="rounded-3xl bg-gradient-to-br from-[#16324f] to-[#234b74] p-8 md:p-10 text-white shadow-xl">
+                    <p class="text-sm font-semibold uppercase tracking-[0.2em] text-blue-300">How it works</p>
+                    <h2 class="mt-3 text-3xl font-bold">A faster path from search to shortlist</h2>
+                    <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div>
+                            <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/12 text-lg font-bold text-amber-200">1</div>
+                            <h3 class="mt-4 text-lg font-semibold">Explore</h3>
+                            <p class="mt-2 text-sm text-slate-300">Use Smart Search or browse the full directory to find strong candidates.</p>
+                        </div>
+                        <div>
+                            <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/12 text-lg font-bold text-amber-200">2</div>
+                            <h3 class="mt-4 text-lg font-semibold">Compare</h3>
+                            <p class="mt-2 text-sm text-slate-300">Open school profiles, check reviews, and compare what matters most to your family.</p>
+                        </div>
+                        <div>
+                            <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/12 text-lg font-bold text-amber-200">3</div>
+                            <h3 class="mt-4 text-lg font-semibold">Shortlist</h3>
+                            <p class="mt-2 text-sm text-slate-300">Save your best options and keep parents and students aligned on the next step.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rounded-3xl bg-white p-8 shadow-sm ring-1 ring-slate-200">
+                    <p class="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-700">Access your portal</p>
+                    <h2 class="mt-3 text-3xl font-bold text-slate-900">Create the right starting point</h2>
+                    <div class="mt-8 space-y-4">
+                        <div class="rounded-2xl border border-slate-200 p-5">
+                            <div class="flex items-start justify-between gap-4">
+                                <div>
+                                    <h3 class="text-lg font-semibold text-slate-900">Student account</h3>
+                                    <p class="mt-2 text-sm text-slate-600">Search schools, build your shortlist, and share options with your parent.</p>
+                                </div>
+                                <i class="fas fa-user-graduate text-2xl text-blue-600"></i>
+                            </div>
+                            <a href="{{ url_for('register') }}?role=student" class="mt-4 inline-flex items-center font-semibold text-blue-700 hover:text-blue-800">Register as student</a>
+                        </div>
+                        <div class="rounded-2xl border border-slate-200 p-5">
+                            <div class="flex items-start justify-between gap-4">
+                                <div>
+                                    <h3 class="text-lg font-semibold text-slate-900">Parent account</h3>
+                                    <p class="mt-2 text-sm text-slate-600">Review shortlisted schools, compare options, and approve with clearer information.</p>
+                                </div>
+                                <i class="fas fa-users text-2xl text-emerald-600"></i>
+                            </div>
+                            <a href="{{ url_for('register') }}?role=parent" class="mt-4 inline-flex items-center font-semibold text-emerald-700 hover:text-emerald-800">Register as parent</a>
+                        </div>
+                    </div>
+                    <div class="mt-8 rounded-2xl bg-slate-50 p-5">
+                        <p class="text-sm text-slate-600">Already have an account?</p>
+                        <a href="{{ url_for('login') }}" class="mt-2 inline-flex items-center font-semibold text-slate-900 hover:text-blue-700">
+                            Login to your account <i class="fas fa-arrow-right ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="bg-slate-100 py-12 border-t border-slate-200">
+        <div class="container mx-auto px-4 text-center">
+            <p class="mx-auto max-w-3xl text-slate-600">
+                <strong class="text-slate-900">Path2Learn</strong> is a flagship project by
+                <strong class="text-slate-900">Tech Inspires Organisation</strong>, built to reduce the information gap in school selection and help students and families make better-informed education choices.
+            </p>
+            <a href="{{ url_for('team') }}" class="mt-5 inline-flex items-center font-semibold text-blue-700 hover:text-blue-800">
+                Meet the team <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+        </div>
+    </section>
+</div>
+{% endblock %}

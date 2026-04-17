@@ -1,0 +1,130 @@
+{% extends 'base.html' %} {% block content %}
+<div class="container mt-5 max-w-lg mx-auto">
+  <h1 class="text-3xl font-bold mb-6 text-blue-600">Import Schools</h1>
+
+  <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+    <!-- The novalidate attribute is important to let our backend handle validation -->
+    <form method="POST" enctype="multipart/form-data" novalidate>
+      <!-- CHANGED: Added the hidden tag for CSRF security. This is essential. -->
+      {{ form.hidden_tag() }}
+
+      <div class="mb-6">
+        <!-- This label is visually hidden but good for accessibility -->
+        <label class="block text-gray-700 mb-2 font-medium"
+          >{{ form.csv_file.label }}</label
+        >
+
+        <div class="flex items-center justify-center w-full">
+          <!-- CHANGED: The 'for' attribute now matches the form field's id -->
+          <label
+            for="csv_file"
+            class="flex flex-col items-center justify-center w-full h-32 border-2 border-blue-300 border-dashed rounded-lg cursor-pointer bg-blue-50 hover:bg-blue-100 transition-colors"
+          >
+            <div class="flex flex-col items-center justify-center pt-5 pb-6">
+              <svg
+                class="w-8 h-8 mb-4 text-blue-500"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 20 16"
+              >
+                <path
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                />
+              </svg>
+              <p class="mb-2 text-sm text-gray-500">
+                <span class="font-semibold">Click to upload</span> or drag and
+                drop
+              </p>
+              <p class="text-xs text-gray-500">CSV file only (MAX. 10MB)</p>
+            </div>
+            <!-- CHANGED: id and name attributes now match our CsvUploadForm field name ('csv_file') -->
+            <input
+              id="csv_file"
+              name="csv_file"
+              type="file"
+              class="hidden"
+              accept=".csv"
+              required
+            />
+          </label>
+        </div>
+        <!-- CHANGED: Added a block to show validation errors from Flask-WTF -->
+        {% if form.csv_file.errors %}
+        <div class="text-red-500 text-sm mt-2">
+          {% for error in form.csv_file.errors %}<span>{{ error }}</span>{%
+          endfor %}
+        </div>
+        {% endif %}
+      </div>
+
+      <div class="mb-6">
+        <h3 class="font-bold mb-3 text-gray-700">File Format Requirements</h3>
+        <!-- CHANGED: Updated the list to be very clear about the required headers -->
+        <div class="bg-gray-50 p-4 rounded-lg text-sm">
+          <p class="mb-2">
+            Your file must include the exact headers from the downloadable
+            template. The import will fail if the headers are different.
+          </p>
+          <p class="text-slate-600">
+            The latest template now includes comparison-ready fields like smart tags, minimum aggregate cutoff, subject combinations, fees breakdown, and performance history.
+          </p>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap gap-3">
+        <a
+          href="{{ url_for('admin_dashboard') }}"
+          class="btn btn-outline-primary px-6 py-3"
+          >Admin Dashboard</a
+        >
+        <a
+          href="{{ url_for('admin_schools') }}"
+          class="btn btn-outline-secondary px-6 py-3"
+          >Cancel</a
+        >
+        <button
+          type="submit"
+          class="btn btn-primary px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 transition-colors"
+        >
+          <i class="fas fa-file-import mr-2"></i> Import Schools
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div class="bg-blue-50 border border-blue-200 rounded-xl p-4">
+    <h3 class="font-bold mb-2 text-blue-700 flex items-center">
+      <i class="fas fa-lightbulb text-yellow-500 mr-2"></i> Need a template?
+    </h3>
+    <p class="mb-3">Download our CSV template to ensure proper formatting:</p>
+    <a
+      href="{{ url_for('download_template') }}"
+      class="btn btn-outline-primary"
+    >
+      <i class="fas fa-file-download mr-2"></i> Download Template
+    </a>
+  </div>
+</div>
+
+<!-- CHANGED: The script now targets the correct ID ('csv_file') -->
+<script>
+  document.getElementById("csv_file").addEventListener("change", function (e) {
+    if (e.target.files.length > 0) {
+      const fileName = e.target.files[0].name;
+      const label = document.querySelector('label[for="csv_file"]');
+      label.innerHTML = `
+        <div class="flex flex-col items-center justify-center pt-5 pb-6">
+          <i class="fas fa-file-excel text-green-500 text-4xl mb-2"></i>
+          <p class="text-sm font-medium text-gray-900">${fileName}</p>
+          <p class="text-xs text-gray-500 mt-1">Click to change file</p>
+        </div>
+      `;
+    }
+  });
+</script>
+{% endblock %}

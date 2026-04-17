@@ -1,0 +1,254 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }} - Path2Learn{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-12">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-10">
+      <span class="inline-flex items-center rounded-full bg-white px-4 py-2 text-sm font-semibold text-blue-700 shadow-sm ring-1 ring-slate-200">
+        <i class="fas fa-sparkles mr-2 text-amber-500"></i>
+        Decision support from real school data
+      </span>
+      <h1 class="mt-5 text-4xl md:text-5xl font-bold text-slate-900">{{ title }}</h1>
+      <p class="mt-4 text-lg text-slate-600 max-w-3xl mx-auto">
+        Your matches are ranked from explicit published school details only. Missing data lowers confidence instead of being guessed.
+      </p>
+    </div>
+
+    <div class="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm mb-10">
+      <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
+        <div>
+          <p class="text-sm font-semibold uppercase tracking-[0.2em] text-blue-700">Your answers</p>
+          <h2 class="mt-2 text-2xl font-bold text-slate-900">Preference summary</h2>
+        </div>
+        <a href="{{ url_for('smart_search') }}" class="inline-flex items-center rounded-full border border-slate-200 bg-white px-5 py-2.5 font-semibold text-slate-700 transition hover:bg-slate-50">
+          <i class="fas fa-sliders mr-2"></i>Adjust answers
+        </a>
+      </div>
+      <div class="mt-6 flex flex-wrap gap-3">
+        {% set summary_items = [
+          ('Province', advisor_answers.province if advisor_answers else ''),
+          ('Program', advisor_answers.education_program if advisor_answers else ''),
+          ('Aggregate', advisor_answers.aggregate_score if advisor_answers else ''),
+          ('Gender', advisor_answers.gender_policy if advisor_answers else ''),
+          ('Boarding', advisor_answers.boarding_policy if advisor_answers else ''),
+          ('Ownership', advisor_answers.ownership if advisor_answers else ''),
+          ('Religion', advisor_answers.religious_affiliation if advisor_answers else ''),
+          ('Fee Band', advisor_answers.fee_band if advisor_answers else ''),
+          ('Language', advisor_answers.language_of_instruction if advisor_answers else '')
+        ] %}
+        {% for label, value in summary_items %}
+          {% if value %}
+          <span class="rounded-full bg-slate-100 px-4 py-2 text-sm font-medium text-slate-700">
+            <strong class="text-slate-900">{{ label }}:</strong> {{ value }}
+          </span>
+          {% endif %}
+        {% endfor %}
+        {% if advisor_answers and advisor_answers.extracurriculars %}
+        <span class="rounded-full bg-blue-50 px-4 py-2 text-sm font-medium text-blue-800">
+          <strong>Activities:</strong> {{ advisor_answers.extracurriculars|join(', ') }}
+        </span>
+        {% endif %}
+        {% if advisor_answers and advisor_answers.preferred_combinations %}
+        <span class="rounded-full bg-emerald-50 px-4 py-2 text-sm font-medium text-emerald-800">
+          <strong>Combinations:</strong> {{ advisor_answers.preferred_combinations|join(', ') }}
+        </span>
+        {% endif %}
+        {% if advisor_answers and advisor_answers.focus_tags %}
+        <span class="rounded-full bg-amber-50 px-4 py-2 text-sm font-medium text-amber-800">
+          <strong>Focus Tags:</strong> {{ advisor_answers.focus_tags|join(', ') }}
+        </span>
+        {% endif %}
+      </div>
+    </div>
+
+    {% if empty_state %}
+    <div class="max-w-4xl mx-auto rounded-[2rem] border border-dashed border-slate-300 bg-white p-10 text-center shadow-sm">
+      <div class="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-amber-100 text-amber-600">
+        <i class="fas fa-compass text-3xl"></i>
+      </div>
+      <h2 class="mt-6 text-3xl font-bold text-slate-900">{{ empty_state.headline }}</h2>
+      <p class="mt-4 text-lg text-slate-600">{{ empty_state.message }}</p>
+      {% if empty_state.active_gates %}
+      <div class="mt-6 flex flex-wrap justify-center gap-3">
+        {% for gate in empty_state.active_gates %}
+        <span class="rounded-full bg-slate-100 px-4 py-2 text-sm font-medium text-slate-700">{{ gate }}</span>
+        {% endfor %}
+      </div>
+      {% endif %}
+      <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="{{ url_for('smart_search') }}" class="inline-flex items-center rounded-full bg-blue-600 px-6 py-3 font-semibold text-white transition hover:bg-blue-700">
+          <i class="fas fa-arrow-left mr-2"></i>Revise My Answers
+        </a>
+        <a href="{{ url_for('advanced_search') }}" class="inline-flex items-center rounded-full border border-slate-200 bg-white px-6 py-3 font-semibold text-slate-700 transition hover:bg-slate-50">
+          Browse Schools Instead
+        </a>
+      </div>
+    </div>
+    {% else %}
+    <section class="mb-10">
+      <div class="rounded-[2rem] overflow-hidden border border-slate-200 bg-white shadow-xl">
+        <div class="grid grid-cols-1 xl:grid-cols-[420px_minmax(0,1fr)]">
+          <div class="relative min-h-[320px]">
+            <img src="{{ best_match.photo }}" alt="{{ best_match.school.name }}" class="absolute inset-0 h-full w-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/75 via-slate-950/25 to-transparent"></div>
+            <div class="absolute left-6 top-6 rounded-full bg-emerald-500 px-4 py-2 text-xs font-bold uppercase tracking-[0.18em] text-white shadow-lg">
+              Best Match
+            </div>
+            <div class="absolute inset-x-0 bottom-0 p-6 text-white">
+              <p class="text-sm uppercase tracking-[0.18em] text-emerald-200">{{ best_match.confidence_label }}</p>
+              <h2 class="mt-2 text-3xl font-bold">{{ best_match.school.name }}</h2>
+              <p class="mt-2 text-slate-200">{{ best_match.school.district }}, {{ best_match.school.province }}</p>
+            </div>
+          </div>
+
+          <div class="p-8 md:p-10">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+              <div class="rounded-3xl bg-slate-50 p-5 border border-slate-200">
+                <p class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Fit Score</p>
+                <p class="mt-2 text-3xl font-bold text-slate-900">{{ best_match.fit_score }}%</p>
+              </div>
+              <div class="rounded-3xl bg-slate-50 p-5 border border-slate-200">
+                <p class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Program</p>
+                <p class="mt-2 text-lg font-bold text-slate-900">{{ best_match.school.education_program }}</p>
+              </div>
+              <div class="rounded-3xl bg-slate-50 p-5 border border-slate-200">
+                <p class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">Community Signal</p>
+                <p class="mt-2 text-lg font-bold text-slate-900">{{ best_match.average_rating }} / 5</p>
+                <p class="text-sm text-slate-500">{{ best_match.review_count }} approved review{{ '' if best_match.review_count == 1 else 's' }}</p>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div class="rounded-3xl border border-emerald-100 bg-emerald-50 p-6">
+                <h3 class="text-lg font-semibold text-emerald-900">Why it matched</h3>
+                <ul class="mt-4 space-y-3 text-sm text-emerald-900">
+                  {% for reason in best_match.reasons %}
+                  <li class="flex items-start gap-3">
+                    <i class="fas fa-check-circle mt-0.5 text-emerald-600"></i>
+                    <span>{{ reason }}</span>
+                  </li>
+                  {% endfor %}
+                </ul>
+              </div>
+              <div class="rounded-3xl border border-amber-100 bg-amber-50 p-6">
+                <h3 class="text-lg font-semibold text-amber-900">Watch-outs</h3>
+                {% if best_match.watchouts %}
+                <ul class="mt-4 space-y-3 text-sm text-amber-900">
+                  {% for note in best_match.watchouts %}
+                  <li class="flex items-start gap-3">
+                    <i class="fas fa-exclamation-circle mt-0.5 text-amber-600"></i>
+                    <span>{{ note }}</span>
+                  </li>
+                  {% endfor %}
+                </ul>
+                {% else %}
+                <p class="mt-4 text-sm text-amber-900">No major watch-outs surfaced from the published profile data.</p>
+                {% endif %}
+              </div>
+            </div>
+
+            <div class="mt-8 flex flex-wrap gap-3">
+              <a href="{{ url_for('school_detail', school_id=best_match.school.id) }}" class="inline-flex items-center rounded-full bg-blue-600 px-6 py-3 font-semibold text-white transition hover:bg-blue-700">
+                <i class="fas fa-school mr-2"></i>View Details
+              </a>
+              {% if alternative_matches %}
+              <a href="{{ url_for('compare_schools', s1=best_match.school.id, s2=alternative_matches[0].school.id) }}" class="inline-flex items-center rounded-full border border-slate-200 bg-white px-6 py-3 font-semibold text-slate-700 transition hover:bg-slate-50">
+                <i class="fas fa-scale-balanced mr-2"></i>Compare
+              </a>
+              {% endif %}
+              {% if current_user.is_authenticated and current_user.role == 'student' %}
+              <form action="{{ url_for('add_to_shortlist', school_id=best_match.school.id) }}" method="POST">
+                <button type="submit" class="inline-flex items-center rounded-full bg-amber-400 px-6 py-3 font-semibold text-slate-900 transition hover:bg-amber-300">
+                  <i class="fas fa-heart mr-2"></i>Add to Shortlist
+                </button>
+              </form>
+              {% else %}
+              <a href="{{ url_for('login') }}" class="inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-6 py-3 font-semibold text-amber-900 transition hover:bg-amber-100">
+                <i class="fas fa-user-plus mr-2"></i>Login to Shortlist
+              </a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="flex items-center justify-between gap-4 mb-6">
+        <div>
+          <p class="text-sm font-semibold uppercase tracking-[0.2em] text-blue-700">Also worth considering</p>
+          <h2 class="mt-2 text-3xl font-bold text-slate-900">Strong alternatives</h2>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+        {% for match in alternative_matches %}
+        <article class="rounded-[2rem] overflow-hidden border border-slate-200 bg-white shadow-sm">
+          <div class="grid grid-cols-1 md:grid-cols-[220px_minmax(0,1fr)] h-full">
+            <div class="relative min-h-[220px]">
+              <img src="{{ match.photo }}" alt="{{ match.school.name }}" class="absolute inset-0 h-full w-full object-cover">
+              <div class="absolute inset-0 bg-gradient-to-t from-slate-950/65 via-slate-950/20 to-transparent"></div>
+              <div class="absolute left-4 top-4 rounded-full bg-white/95 px-3 py-1 text-xs font-bold uppercase tracking-[0.14em] text-slate-800">
+                Strong Alternative
+              </div>
+              <div class="absolute bottom-4 left-4 rounded-2xl bg-white/90 px-4 py-3 backdrop-blur-sm">
+                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">{{ match.confidence_label }}</p>
+                <p class="mt-1 text-xl font-bold text-slate-900">{{ match.fit_score }}%</p>
+              </div>
+            </div>
+            <div class="p-6 flex flex-col">
+              <div class="flex items-start justify-between gap-4">
+                <div>
+                  <h3 class="text-2xl font-bold text-slate-900">{{ match.school.name }}</h3>
+                  <p class="mt-2 text-sm text-slate-600">{{ match.school.district }}, {{ match.school.province }}</p>
+                </div>
+                <div class="text-right">
+                  <p class="text-sm font-semibold text-amber-500"><i class="fas fa-star mr-1"></i>{{ match.average_rating }}</p>
+                  <p class="text-xs text-slate-500">{{ match.review_count }} review{{ '' if match.review_count == 1 else 's' }}</p>
+                </div>
+              </div>
+
+              <div class="mt-4 flex flex-wrap gap-2">
+                <span class="rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-800">{{ match.school.education_program }}</span>
+                <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">{{ match.school.boarding_policy }}</span>
+                <span class="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-800">{{ match.school.ownership }}</span>
+              </div>
+
+              <div class="mt-5 grid grid-cols-1 gap-4">
+                <div class="rounded-2xl border border-emerald-100 bg-emerald-50 px-4 py-4">
+                  <p class="text-xs font-semibold uppercase tracking-[0.16em] text-emerald-800">Why it still fits</p>
+                  <p class="mt-2 text-sm text-emerald-900">{{ match.reasons|join(' • ') }}</p>
+                </div>
+                <div class="rounded-2xl border border-amber-100 bg-amber-50 px-4 py-4">
+                  <p class="text-xs font-semibold uppercase tracking-[0.16em] text-amber-800">Watch-outs</p>
+                  <p class="mt-2 text-sm text-amber-900">{{ match.watchouts|join(' • ') if match.watchouts else 'No major watch-outs surfaced from the published profile data.' }}</p>
+                </div>
+              </div>
+
+              <div class="mt-6 flex flex-wrap gap-3">
+                <a href="{{ url_for('school_detail', school_id=match.school.id) }}" class="inline-flex items-center rounded-full bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700">
+                  View Details
+                </a>
+                <a href="{{ url_for('compare_schools', s1=best_match.school.id, s2=match.school.id) }}" class="inline-flex items-center rounded-full border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">
+                  Compare with Best Match
+                </a>
+                {% if current_user.is_authenticated and current_user.role == 'student' %}
+                <form action="{{ url_for('add_to_shortlist', school_id=match.school.id) }}" method="POST">
+                  <button type="submit" class="inline-flex items-center rounded-full bg-amber-400 px-5 py-2.5 text-sm font-semibold text-slate-900 transition hover:bg-amber-300">
+                    Add to Shortlist
+                  </button>
+                </form>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
