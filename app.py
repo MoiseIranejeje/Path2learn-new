@@ -262,7 +262,7 @@ def admin_required(f):
     def decorated_function(*args, **kwargs):
         if not current_user.is_authenticated or not current_user.is_admin:
             flash('You do not have permission to access this page.', 'danger')
-            return redirect(url_for('admin_login'))
+            return redirect(url_for('login'))
         return f(*args, **kwargs)
     return decorated_function
 #Checking super admin to access the page
@@ -925,6 +925,34 @@ def recommend():
     results = School.query.filter_by(**filters).all()
     return jsonify([school.to_dict() for school in results])
 # --- ★★★ NEW STATIC PAGE ROUTES ★★★ ---
+@app.route('/ai-advisor', methods=['GET', 'POST'])
+def ai_advisor():
+    recommendation = None
+    error = None
+    
+    if request.method == 'POST':
+        student_profile = request.form.get('profile', '').strip()
+        
+        if not student_profile:
+            error = "Please describe your situation first."
+        else:
+            try:
+                from ai_service import get_school_recommendation
+                schools = School.query.all()
+                
+                if not schools:
+                    error = "No schools in database yet. Please check back soon."
+                else:
+                    recommendation = get_school_recommendation(
+                        student_profile, schools
+                    )
+            except Exception as e:
+                error = "AI advisor is temporarily unavailable. Please try again."
+                print(f"AI Error: {e}")
+    
+    return render_template('ai_advisor.html', 
+                         recommendation=recommendation,
+                         error=error)
 
 @app.route('/about')
 def about():
