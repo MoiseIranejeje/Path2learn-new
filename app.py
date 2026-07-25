@@ -20,27 +20,27 @@ load_dotenv() # Loads the .env file
 # --- App Initialization and Config ---
 app = Flask(__name__)
 
-# ★★★ ADD THIS SINGLE LINE HERE ★★★
+#Database creation and environment variables creation
 app.jinja_env.globals['min'] = min
-app.config['SECRET_KEY'] = 'a-very-secret-key-that-you-should-change'
+app.config['SECRET_KEY'] = '1f2c4h762a31b8nv0s33d8bn8m93s4b6n8'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///schools.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['STATIC_TEMPLATE_DIR'] = os.path.join(app.root_path, 'static', 'templates')
-# ★★★ START: NEW MAIL CONFIGURATION ★★★
+#NEW MAIL CONFIGURATION 
 app.config['MAIL_SERVER'] = 'smtp.googlemail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
 app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
 mail = Mail(app)
-# ★★★ END: NEW MAIL CONFIGURATION ★★★
+
 
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 os.makedirs(app.config['STATIC_TEMPLATE_DIR'], exist_ok=True)
 
 # --- Database, Login, and Forms Initialization ---
-# ★ IMPORTANT: Added SchoolSuggestion to model imports
+# school suggestion functionality for user to suggest schools
 from models import db, User, School, SchoolSuggestion
 db.init_app(app)
 
@@ -120,7 +120,7 @@ DEFAULT_EXTRACURRICULAR_OPTIONS = [
     'STEM Fair',
     'Art Club',
 ]
-DEFAULT_COMBINATION_OPTIONS = ['PCM', 'PCB', 'MCB', 'MEG', 'MPC', 'HEG']
+DEFAULT_COMBINATION_OPTIONS = ['Math and Science Stream One', 'Math and Science Stream Two', 'Associate Nursing Program', 'TTC', 'Arts and Humanities', 'Software Programming and Embeded Systems']
 
 
 def split_csv_values(value):
@@ -265,7 +265,7 @@ def admin_required(f):
             return redirect(url_for('admin_login'))
         return f(*args, **kwargs)
     return decorated_function
-
+#Checking super admin to access the page
 def superadmin_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -438,7 +438,7 @@ def suggest_school():
         )
         db.session.add(suggestion)
         db.session.commit()
-        flash('Thank you! Your school suggestion has been received and is pending review by our team.', 'success')
+        flash('Thank you! Your school suggestion has been received and is pending review by the project admin.', 'success')
         return redirect(url_for('index'))
 
     return render_template('suggest_school.html', title='Suggest a School', form=form)
@@ -928,7 +928,7 @@ def recommend():
 
 @app.route('/about')
 def about():
-    return render_template('about.html', title='About Us')
+    return render_template('about.html', title='About Path2Learn')
 
 @app.route('/how-to-use')
 def how_to_use():
@@ -959,7 +959,7 @@ def contact():
         except Exception as e:
             flash(f'An error occurred while sending your message: {e}', 'danger')
 
-    return render_template('contact.html', title='Contact Us', form=form)
+    return render_template('contact.html', title='Contact Me', form=form)
 # ★★★ START: NEW ROUTES FOR MANAGING SUGGESTIONS ★★★
 
 @app.route('/admin/suggestions')
@@ -1097,7 +1097,7 @@ def school_map():
 # ★★★ NEW: ROUTE FOR THE TEAM PAGE ★★★
 @app.route('/team')
 def team():
-    return render_template('team.html', title="Our Team")
+    return render_template('team.html', title="About Me")
 # In app.py
 # --- Update your imports at the top ---
 # ★★★ NEW: CHANGE PASSWORD ROUTE ★★★
@@ -1788,5 +1788,5 @@ if __name__ == '__main__':
             admin_user.set_password('password')
             db.session.add(admin_user)
             db.session.commit()
-            print("Default SUPERADMIN user created with username 'admin' and password 'password'")
+            print("Default SUPERADMIN user created ")
     app.run(debug=True)
