@@ -381,12 +381,74 @@
         box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
       }
 
-      /* Legacy dark-theme bridge removed to preserve current dashboard styles */
-
-
-      main blockquote {
-        border-color: #bfdbfe !important;
+            /* Fast bridge for older dark-themed templates */
+      main .bg-gray-900,
+      main .bg-gray-800,
+      main .bg-gray-750,
+      main .bg-gray-700 {
+        background-color: #ffffff !important;
+        border-color: #dbe6f3 !important;
+        box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08) !important;
       }
+
+      main .bg-gray-800\/50 {
+        background-color: #f8fbff !important;
+      }
+
+      main .border-gray-900,
+      main .border-gray-800,
+      main .border-gray-700,
+      main .border-gray-600,
+      main .border-gray-500 {
+        border-color: #dbe6f3 !important;
+      }
+
+      main .divide-gray-700 > :not([hidden]) ~ :not([hidden]) {
+        border-color: #dbe6f3 !important;
+      }
+
+      main h1.text-white,
+      main h2.text-white,
+      main h3.text-white,
+      main h4.text-white,
+      main h5.text-white,
+      main h6.text-white,
+      main p.text-white,
+      main span.text-white,
+      main td.text-white,
+      main th.text-white,
+      main strong.text-white {
+        color: #1e293b !important;
+      }
+
+      main .text-gray-300,
+      main .text-gray-400,
+      main .text-gray-500 {
+        color: #64748b !important;
+      }
+
+      main .hover\:bg-gray-700:hover,
+      main .hover\:bg-gray-600:hover,
+      main .hover\:bg-gray-500:hover {
+        background-color: #eff6ff !important;
+      }
+
+      main .hover\:text-white:hover {
+        color: #16324f !important;
+      }
+
+      main .bg-gray-700.text-white,
+      main .bg-gray-800.text-white,
+      main .bg-gray-900.text-white {
+        color: #1e293b !important;
+      }
+
+      main table thead.bg-gray-900,
+      main table thead.bg-gray-700,
+      main table thead.bg-gray-800 {
+        background: #eef4ff !important;
+      }
+
       
       /* Logo animation */
       @keyframes logo-glow {
@@ -705,3 +767,4 @@
     <script src="{{ url_for('static', filename='scripts.js') }}"></script>
   </body>
 </html>
+
